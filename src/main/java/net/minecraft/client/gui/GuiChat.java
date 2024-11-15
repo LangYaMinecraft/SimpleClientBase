@@ -1,8 +1,12 @@
 package net.minecraft.client.gui;
 
+import cn.langya.Client;
+import cn.langya.element.Element;
 import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.util.List;
+
+import cn.langya.utils.RenderUtil;
 import net.minecraft.network.play.client.C14PacketTabComplete;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
@@ -28,7 +32,7 @@ public class GuiChat extends GuiScreen
     private boolean playerNamesFound;
     private boolean waitingOnAutocomplete;
     private int autocompleteIndex;
-    private List<String> foundPlayerNames = Lists.<String>newArrayList();
+    private final List<String> foundPlayerNames = Lists.newArrayList();
 
     /** Chat entry field */
     protected GuiTextField inputField;
@@ -99,7 +103,7 @@ public class GuiChat extends GuiScreen
 
         if (keyCode == 1)
         {
-            this.mc.displayGuiScreen((GuiScreen)null);
+            this.mc.displayGuiScreen(null);
         }
         else if (keyCode != 28 && keyCode != 156)
         {
@@ -133,7 +137,7 @@ public class GuiChat extends GuiScreen
                 this.sendChatMessage(s);
             }
 
-            this.mc.displayGuiScreen((GuiScreen)null);
+            this.mc.displayGuiScreen(null);
         }
     }
 
@@ -171,8 +175,12 @@ public class GuiChat extends GuiScreen
      */
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
-        if (mouseButton == 0)
-        {
+        if (mouseButton == 0) {
+
+            for (Element element : Client.getInstance().getElementManager().getElementMap().values()) {
+                element.setHovering(element.checkHover(mouseX,mouseY));
+            }
+
             IChatComponent ichatcomponent = this.mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
 
             if (this.handleComponentClick(ichatcomponent))
@@ -185,8 +193,19 @@ public class GuiChat extends GuiScreen
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
+    @Override
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
+        for (Element element : Client.getInstance().getElementManager().getElementMap().values()) {
+            element.setHovering(false);
+        }
+        super.mouseReleased(mouseX, mouseY, state);
+    }
+
     /**
      * Sets the text of the chat
+     *
+     * @param newChatText The new chat text to be set
+     * @param shouldOverwrite Determines if the text currently in the chat should be overwritten or appended
      */
     protected void setText(String newChatText, boolean shouldOverwrite)
     {
@@ -246,7 +265,7 @@ public class GuiChat extends GuiScreen
             this.mc.ingameGUI.getChatGUI().printChatMessageWithOptionalDeletion(new ChatComponentText(stringbuilder.toString()), 1);
         }
 
-        this.inputField.writeText((String)this.foundPlayerNames.get(this.autocompleteIndex++));
+        this.inputField.writeText(this.foundPlayerNames.get(this.autocompleteIndex++));
     }
 
     private void sendAutocompleteRequest(String p_146405_1_, String p_146405_2_)
@@ -268,6 +287,8 @@ public class GuiChat extends GuiScreen
     /**
      * input is relative and is applied directly to the sentHistoryCursor so -1 is the previous message, 1 is the next
      * message from the current cursor position
+     *
+     * @param msgPos The position of the message in the sent chat history relative to the current message.
      */
     public void getSentHistory(int msgPos)
     {
@@ -289,7 +310,7 @@ public class GuiChat extends GuiScreen
                     this.historyBuffer = this.inputField.getText();
                 }
 
-                this.inputField.setText((String)this.mc.ingameGUI.getChatGUI().getSentMessages().get(i));
+                this.inputField.setText(this.mc.ingameGUI.getChatGUI().getSentMessages().get(i));
                 this.sentHistoryCursor = i;
             }
         }
@@ -300,6 +321,15 @@ public class GuiChat extends GuiScreen
      */
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
+        for (Element element : Client.getInstance().getElementManager().getElementMap().values()) {
+            if (element.isHovering()) {
+                if (Client.getInstance().getModuleManager().getModuleMap().get(element.getModuleName()).isEnable()) {
+                    RenderUtil.drawOutline((int) element.getX() - 4, (int) element.getY() - 4, (int) element.getWidth() + 8, (int) element.getHeight() + 8, -1);
+                    element.setXY(mouseX - (element.getWidth() / 2), mouseY - (element.getHeight() / 2));
+                }
+            }
+        }
+
         drawRect(2, this.height - 14, this.width - 2, this.height - 2, Integer.MIN_VALUE);
         this.inputField.drawTextBox();
         IChatComponent ichatcomponent = this.mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
