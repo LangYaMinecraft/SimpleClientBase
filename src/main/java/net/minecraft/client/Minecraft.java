@@ -1,5 +1,6 @@
 package net.minecraft.client;
 
+import cn.langya.event.events.EventKeyInput;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -1799,6 +1800,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                     }
                     else
                     {
+                        EventKeyInput eventKeyInput = new EventKeyInput(k);
+                        Client.getInstance().getEventManager().call(eventKeyInput);
+
                         if (k == 1)
                         {
                             this.displayInGameMenu();

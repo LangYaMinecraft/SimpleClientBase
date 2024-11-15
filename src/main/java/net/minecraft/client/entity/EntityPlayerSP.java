@@ -132,7 +132,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
 
     public void onUpdateWalkingPlayer()
     {
-        EventMotion eventMotionPre = new EventMotion(this.posX, this.getEntityBoundingBox().minY, this.posZ,this.rotationYaw, this.rotationPitch, this.onGround,true);
+         EventMotion eventMotionPre = new EventMotion(this.posX, this.getEntityBoundingBox().minY, this.posZ,this.rotationYaw, this.rotationPitch, this.onGround,true);
         Client.getInstance().getEventManager().call(eventMotionPre);
         boolean flag = this.isSprinting();
 
