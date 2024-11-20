@@ -1,5 +1,6 @@
 package cn.langya;
 
+import cn.langya.command.CommandManager;
 import cn.langya.config.ConfigManager;
 import cn.langya.element.ElementManager;
 import cn.langya.event.EventManager;
@@ -25,12 +26,14 @@ public class Client {
     private ModuleManager moduleManager;
     private ValueManager valueManager;
     private ConfigManager configManager;
+    private CommandManager commandManager;
 
     public void initClient() {
-        elementManager = new ElementManager();
-        moduleManager = new ModuleManager();
-        valueManager = new ValueManager();
-        configManager = new ConfigManager();
+        this.elementManager = new ElementManager();
+        this.moduleManager = new ModuleManager();
+        this.valueManager = new ValueManager();
+        this.configManager = new ConfigManager();
+        this.commandManager = new CommandManager();
 
         Display.setTitle(String.format("%s - %s",name,version));
         System.out.println("Client initialized");

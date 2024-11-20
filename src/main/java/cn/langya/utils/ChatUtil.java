@@ -15,10 +15,6 @@ public class ChatUtil implements Wrapper {
         mc.thePlayer.addChatMessage(new ChatComponentText(message));
     }
 
-    public static void success(String s) {
-        info(s);
-    }
-
     public static void info(String s) {
         log(PREFIX + s);
     }
