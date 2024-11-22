@@ -1,6 +1,6 @@
 package cn.langya.command;
 
-import cn.langya.command.impl.*;
+import cn.langya.utils.InitializerUtil;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -20,13 +20,19 @@ public class CommandManager {
         init();
     }
 
-    public void addCommand(Command module) {
-        this.commandMap.put(module.getName(),module);
+    public void addCommand(Class<? extends Command> command) throws InstantiationException, IllegalAccessException {
+        this.commandMap.put(command.getSimpleName(), command.newInstance());
     }
 
     public void init() {
-        addCommand(new BindCommand());
-        addCommand(new ToggleCommand());
+        InitializerUtil.initialize(clazz -> {
+            if (!InitializerUtil.check(Command.class,clazz)) return;
+            try {
+                addCommand((Class<? extends Command>) clazz);
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }, this.getClass());
     }
 
     public boolean runCommand(String message) {

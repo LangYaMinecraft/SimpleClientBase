@@ -1,11 +1,12 @@
 package cn.langya.config;
 
+import cn.langya.utils.InitializerUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import cn.langya.Client;
 import cn.langya.Wrapper;
-import cn.langya.config.impl.*;
+import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -16,19 +17,32 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class ConfigManager implements Wrapper {
     private final List<Config> configs = new ArrayList<>();
-    public final File dir = new File(mc.mcDataDir, Client.name);
+    private final File dir = new File(mc.mcDataDir, Client.name);
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private boolean isFirst;
 
     public ConfigManager() {
         init();
     }
 
     public void init() {
-        if (!dir.exists()) dir.mkdir();
-        configs.add(new ModuleConfig());
-        configs.add(new ElementConfig());
+        if (!dir.exists()) {
+            isFirst = true;
+            dir.mkdir();
+        }
+
+        InitializerUtil.initialize(clazz -> {
+            if (!InitializerUtil.check(Config.class,clazz)) return;
+            try {
+                configs.add(((Class<? extends Config>) clazz).newInstance());
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }, this.getClass());
+
         loadAllConfig();
     }
 

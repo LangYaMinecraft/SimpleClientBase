@@ -1,6 +1,8 @@
-# ClientBase
+# SimpleClientBase
 
-# MavenMCP 1.8.9
+自动装配模块/命令/配置/视觉
+
+# Fork: MavenMCP 1.8.9
 
 ### About
 Maven MCP 1.8.9 is an updated version of MCP. It uses Maven, has a clean code structure, supports Linux and version control in your projects!

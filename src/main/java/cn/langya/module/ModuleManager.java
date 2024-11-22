@@ -3,9 +3,7 @@ package cn.langya.module;
 import cn.langya.Client;
 import cn.langya.event.annotations.EventTarget;
 import cn.langya.event.events.EventKeyInput;
-import cn.langya.module.impl.combat.*;
-import cn.langya.module.impl.move.*;
-import cn.langya.module.impl.render.*;
+import cn.langya.utils.InitializerUtil;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -25,14 +23,19 @@ public class ModuleManager {
         init();
     }
 
-    public void addModule(Module module) {
-        this.moduleMap.put(module.getName(),module);
+    public void addModule(Class<? extends Module> module) throws InstantiationException, IllegalAccessException {
+        this.moduleMap.put(module.getSimpleName(), module.newInstance());
     }
 
     public void init() {
-        addModule(new HUD());
-        addModule(new Sprint());
-        addModule(new KillAura());
+        InitializerUtil.initialize(clazz -> {
+            if (!InitializerUtil.check(Module.class,clazz)) return;
+            try {
+                addModule((Class<? extends Module>) clazz);
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }, this.getClass());
 
         Client.getInstance().getEventManager().register(this);
     }
