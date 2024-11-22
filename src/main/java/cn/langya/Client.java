@@ -19,7 +19,7 @@ public class Client {
     private static final Client instance = new Client();
 
     public static final String name = "ClientBase";
-    public static final double version = 0.1;
+    public static final String version = "0.1";
 
     private final EventManager eventManager = new EventManager();
     private ElementManager elementManager;
@@ -36,11 +36,10 @@ public class Client {
         this.commandManager = new CommandManager();
 
         Display.setTitle(String.format("%s - %s",name,version));
-        System.out.println("Client initialized");
     }
 
     public void stopClient() {
-        configManager.saveAllConfig();
+        this.configManager.saveAllConfig();
     }
 }
 

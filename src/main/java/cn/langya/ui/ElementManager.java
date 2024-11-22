@@ -15,14 +15,14 @@ public class ElementManager {
 
     private final Map<String,Element> elementMap;
 
-    public Element createElement(String elementName,String moduleName,float initX,float initY) {
-        Element element = new Element(elementName,moduleName);
+    public Element createElement(String name,float initX,float initY) {
+        Element element = new Element(name);
         element.setXY(initX,initY);
-        elementMap.put(moduleName,element);
-        return elementMap.get(moduleName);
+        elementMap.put(name,element);
+        return elementMap.get(name);
     }
 
-    public Element createElement(String elementName,String moduleName) {
-        return createElement(elementName,moduleName,10,10);
+    public Element createElement(String name) {
+        return createElement(name,10,10);
     }
 }

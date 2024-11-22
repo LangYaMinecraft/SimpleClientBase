@@ -323,7 +323,7 @@ public class GuiChat extends GuiScreen
     {
         for (Element element : Client.getInstance().getElementManager().getElementMap().values()) {
             if (element.isHovering()) {
-                if (Client.getInstance().getModuleManager().getModuleMap().get(element.getModuleName()).isEnable()) {
+                if (Client.getInstance().getModuleManager().getModuleMap().get(element.getName()).isEnable()) {
                     RenderUtil.drawOutline((int) element.getX() - 4, (int) element.getY() - 4, (int) element.getWidth() + 8, (int) element.getHeight() + 8, -1);
                     element.setXY(mouseX - (element.getWidth() / 2), mouseY - (element.getHeight() / 2));
                 }

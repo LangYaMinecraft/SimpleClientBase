@@ -23,7 +23,7 @@ public class HUD extends Module {
     }
 
     private final NumberValue spacingValue = new NumberValue("Spacing",2,5,0,1);
-    private final Element element = Client.getInstance().getElementManager().createElement("HUD",getName());
+    private final Element element = Client.getInstance().getElementManager().createElement(getName());
 
     @EventTarget
     public void onRender2D(EventRender2D event) {

@@ -22,15 +22,15 @@ public class ElementConfig extends Config implements Wrapper {
             final JsonObject hudObject = new JsonObject();
             hudObject.addProperty("x", hud.getX());
             hudObject.addProperty("y", hud.getY());
-            object.add(hud.getElementName(), hudObject);
+            object.add(hud.getName(), hudObject);
         }
         return object;
     }
 
     public void loadConfig(final JsonObject object) {
         for (Element hud : Client.getInstance().getElementManager().getElementMap().values()) {
-            if (object.has(hud.getElementName())) {
-                final JsonObject hudObject = object.get(hud.getElementName()).getAsJsonObject();
+            if (object.has(hud.getName())) {
+                final JsonObject hudObject = object.get(hud.getName()).getAsJsonObject();
                 hud.setXY(hudObject.get("x").getAsInt(),hudObject.get("y").getAsInt());
             }
         }

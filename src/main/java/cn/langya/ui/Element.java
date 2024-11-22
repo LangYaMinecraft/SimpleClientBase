@@ -8,12 +8,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Element implements Wrapper {
-    public Element(String elementName, String moduleName) {
-        this.elementName = elementName;
-        this.moduleName = moduleName;
+    public Element(String name) {
+        this.name = name;
     }
 
-    private final String moduleName, elementName;
+    private final String name;
     private float x, y, width, height;
     private boolean isHovering;
 
