@@ -2149,7 +2149,7 @@ public class Config
         }
         else if (p_collectionToArray_1_.isPrimitive())
         {
-            throw new IllegalArgumentException("Can not make arrays with primitive elements (int, double), element class: " + p_collectionToArray_1_);
+            throw new IllegalArgumentException("Can not make arrays with primitive elements (int, double), ui class: " + p_collectionToArray_1_);
         }
         else
         {

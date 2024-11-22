@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import cn.langya.Client;
 import cn.langya.Wrapper;
 import cn.langya.config.Config;
-import cn.langya.element.Element;
+import cn.langya.ui.Element;
 
 /**
  * @author LangYa

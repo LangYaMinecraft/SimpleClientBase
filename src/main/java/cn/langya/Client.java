@@ -2,7 +2,7 @@ package cn.langya;
 
 import cn.langya.command.CommandManager;
 import cn.langya.config.ConfigManager;
-import cn.langya.element.ElementManager;
+import cn.langya.ui.ElementManager;
 import cn.langya.event.EventManager;
 import cn.langya.module.ModuleManager;
 import cn.langya.value.ValueManager;

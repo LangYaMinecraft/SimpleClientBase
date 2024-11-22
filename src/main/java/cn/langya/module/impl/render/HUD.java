@@ -1,14 +1,15 @@
 package cn.langya.module.impl.render;
 
 import cn.langya.Client;
-import cn.langya.element.Element;
+import cn.langya.ui.Element;
 import cn.langya.event.annotations.EventTarget;
 import cn.langya.event.events.EventRender2D;
 import cn.langya.module.Category;
 import cn.langya.module.Module;
+import cn.langya.ui.font.FontManager;
+import cn.langya.ui.font.impl.UFontRenderer;
 import cn.langya.value.impl.NumberValue;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.EnumChatFormatting;
 
 /**
@@ -27,11 +28,11 @@ public class HUD extends Module {
     @EventTarget
     public void onRender2D(EventRender2D event) {
         String displayText = String.format("%s | %sFPS",Client.name, Minecraft.getDebugFPS());
-        FontRenderer fr = mc.fontRendererObj;
+        UFontRenderer fr = FontManager.hanYi(18);
         float width = fr.getStringWidth(displayText);
         float height = fr.FONT_HEIGHT;
         element.setWH(width,height);
-        fr.drawString(displayText, (int) element.getX(), (int) element.getY(), -1);
+        fr.drawStringWithShadow(displayText, (int) element.getX(), (int) element.getY(), -1);
 
         int index = 0;
         for (Module module : Client.getInstance().getModuleManager().getModuleMap().values()) {

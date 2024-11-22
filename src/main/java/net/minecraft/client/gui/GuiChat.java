@@ -1,7 +1,7 @@
 package net.minecraft.client.gui;
 
 import cn.langya.Client;
-import cn.langya.element.Element;
+import cn.langya.ui.Element;
 import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.util.List;

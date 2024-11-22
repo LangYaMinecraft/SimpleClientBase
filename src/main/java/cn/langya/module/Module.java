@@ -38,10 +38,10 @@ public class Module implements Wrapper {
         // 获取值不需要.this
         if (enable) {
             onEnable();
-            ChatUtil.success(this.name + EnumChatFormatting.GREEN + " Enabled.");
+            ChatUtil.info(this.name + EnumChatFormatting.GREEN + " Enabled.");
         } else {
             onDisable();
-            ChatUtil.success(this.name + EnumChatFormatting.RED + " Disable.");
+            ChatUtil.info(this.name + EnumChatFormatting.RED + " Disable.");
         }
 
         Client.getInstance().getEventManager().registerModule(enable,this);

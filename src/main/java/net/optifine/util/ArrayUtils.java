@@ -287,7 +287,7 @@ public class ArrayUtils
         }
         else if (elementClass.isPrimitive())
         {
-            throw new IllegalArgumentException("Can not make arrays with primitive elements (int, double), element class: " + elementClass);
+            throw new IllegalArgumentException("Can not make arrays with primitive elements (int, double), ui class: " + elementClass);
         }
         else
         {
