@@ -75,4 +75,11 @@ public class KillAura extends Module {
             }
         }
     }
+
+    @Override
+    public void onDisable() {
+        // 你忘记重置转头了
+        RotationUtil.setRotations();
+        super.onDisable();
+    }
 }
