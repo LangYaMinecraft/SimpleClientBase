@@ -14,75 +14,67 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.input.Keyboard;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+// 杀戮光环模块类
 @Getter
 @Setter
 public class KillAura extends Module {
 
+    private final NumberValue cpsValue = new NumberValue("CPS", 6, 20, 1, 1); // 每秒攻击次数设定
+    private final NumberValue rangeValue = new NumberValue("Range", 3, 6, 1, 0.1F); // 攻击范围设定
+    private final TimerUtil attackTimer = new TimerUtil(); // 攻击计时器
+    private EntityLivingBase target; // 当前攻击目标
+
+    // 构造函数，设置模块类别和快捷键
     public KillAura() {
         super(Category.Combat);
-        this.attackTimer = new TimerUtil();
         setKeyCode(Keyboard.KEY_R);
     }
 
-    private final NumberValue cpsValue = new NumberValue("CPS",6,20,1,1);
-    private final NumberValue rangeValue = new NumberValue("Range",3,6,1,0.1F);
-    
-    private final List<EntityLivingBase> targets = new ArrayList<>();
-    private EntityLivingBase target;
-    private final TimerUtil attackTimer;
-
+    // 更新事件处理方法
     @EventTarget
     public void onUpdate(EventUpdate event) {
         float reach = rangeValue.getValue();
+        List<EntityLivingBase> validTargets = mc.theWorld.loadedEntityList.stream()
+                .filter(entity -> entity instanceof EntityLivingBase)
+                .map(entity -> (EntityLivingBase) entity)
+                .filter(entity -> entity != mc.thePlayer && entity.getHealth() > 0 && !entity.isDead)
+                .filter(entity -> entity.getDistanceToEntity(mc.thePlayer) <= reach)
+                .collect(Collectors.toList());
 
-        // getTargets
-        for (Entity entity : mc.theWorld.loadedEntityList) {
-            // 防止重复添加
-            if (!(entity instanceof EntityLivingBase) || targets.contains(target)) continue;
-            EntityLivingBase entityLivingBase = (EntityLivingBase) entity;
-            if (entityLivingBase == mc.thePlayer || entityLivingBase.getHealth() <= 0 || 
-            entityLivingBase.isDead || entityLivingBase.getDistanceToEntity(mc.thePlayer) > reach) continue;
-            targets.add(entityLivingBase);
-        }
-        
-        if (targets.isEmpty()) return;
-        targets.removeIf(target -> target.getHealth() <= 0 || target.getDistanceToEntity(mc.thePlayer) > reach);
-
-        if (target != null && (target.getHealth() <= 0 || target.getDistanceToEntity(mc.thePlayer) > reach)) target = null;
-        
-        // getTarget
-        if (!targets.isEmpty() && target == null) {
-            // single
-            target = targets.get(0);
+        // 选择目标
+        if (!validTargets.isEmpty()) {
+            target = target == null || target.getHealth() <= 0 || target.getDistanceToEntity(mc.thePlayer) > reach
+                    ? validTargets.get(0) : target;
         }
     }
 
+    // 动作事件处理方法
     @EventTarget
     public void onMotion(EventMotion event) {
-        if (target == null) RotationUtil.setRotations();
-        if (event.isPre() && !targets.isEmpty() && target != null) {
-            float[] rotations = RotationUtil.getRotationsNeeded(target);
-            RotationUtil.setRotations(rotations);
-            if (attackTimer.hasReached(1000 / cpsValue.getValue().intValue())) {
-                mc.thePlayer.swingItem();
-                mc.playerController.attackEntity(mc.thePlayer,target);
-                attackTimer.reset();
-            }
+        if (target == null) {
+            RotationUtil.setRotations();
+            return;
+        }
+
+        if (event.isPre() && attackTimer.hasReached(1000 / cpsValue.getValue().intValue())) {
+            RotationUtil.setRotations(RotationUtil.getRotationsNeeded(target));
+            mc.thePlayer.swingItem();
+            mc.playerController.attackEntity(mc.thePlayer, target);
+            attackTimer.reset();
         }
     }
 
     @Override
     public void onDisable() {
-        // 你忘记重置转头了
-        RotationUtil.setRotations();
+        RotationUtil.setRotations(); // 重置转头
         super.onDisable();
     }
 
     @Override
     public String getSuffix() {
-        return String.valueOf(targets.size());
+        return String.valueOf(target != null ? 1 : 0); // 返回当前是否有目标
     }
 }

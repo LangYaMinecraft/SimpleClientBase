@@ -7,7 +7,6 @@ import cn.langya.value.Value;
  * @since 2024/9/1 20:12
  */
 public class NumberValue extends Value<Float> {
-
     public float maxValue;
     public float minValue;
     public float incValue;

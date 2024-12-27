@@ -13,23 +13,42 @@ import java.lang.reflect.Field;
 public class ValueManager {
 
     public ValueManager() {
-        init();
+        Client.getInstance()
+                .getModuleManager()
+                .getModuleMap()
+                .values()
+                .forEach(this::registerValues);
     }
 
-    public void init() {
-        // 就static forEach moment
-        Client.getInstance().getModuleManager().getModuleMap().values().forEach(ValueManager::addValues);
+    /**
+     * Registers values for the given module by inspecting its fields.
+     *
+     * @param module the module to register values for
+     */
+    private void registerValues(Module module) {
+        Field[] fields = module.getClass().getDeclaredFields();
+
+        for (Field field : fields) {
+            registerValue(module, field);
+        }
     }
 
-    private static void addValues(Module module) {
-        for (Field field : module.getClass().getDeclaredFields()) {
-            try {
-                field.setAccessible(true);
-                final Object obj = field.get(module);
-                if (obj instanceof Value) module.getValues().add((Value<?>) obj);
-            } catch (IllegalAccessException e) {
-                Logger.error("{ } register value error : ",e,module.getName());
+    /**
+     * Attempts to register a single value field for a module.
+     *
+     * @param module the module the field belongs to
+     * @param field  the field to register
+     */
+    private void registerValue(Module module, Field field) {
+        try {
+            field.setAccessible(true);
+            Object value = field.get(module);
+
+            if (value instanceof Value) {
+                module.getValues().add((Value<?>) value);
             }
+        } catch (IllegalAccessException e) {
+            Logger.error("Error registering value for module {}: ", module.getName(), e);
         }
     }
 }

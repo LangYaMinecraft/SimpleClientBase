@@ -10,64 +10,99 @@ import cn.langya.value.impl.BooleanValue;
 import cn.langya.value.impl.ModeValue;
 import cn.langya.value.impl.NumberValue;
 
+import java.util.stream.Collectors;
+
 /**
  * @author LangYa
  * @since 2024/9/3 18:21
+ * 模块配置类，负责模块的保存和加载配置。
  */
 public class ModuleConfig extends Config {
 
+    /**
+     * 构造函数，初始化模块配置。
+     */
     public ModuleConfig() {
         super("Module");
     }
 
+    /**
+     * 保存当前所有模块的配置，并以JsonObject格式返回。
+     * @return 包含所有模块配置的JsonObject
+     */
     public JsonObject saveConfig() {
         JsonObject object = new JsonObject();
-        for (Module module : Client.getInstance().getModuleManager().getModuleMap().values()) {
+        Client.getInstance().getModuleManager().getModuleMap().values().forEach(module -> {
             JsonObject moduleObject = new JsonObject();
             moduleObject.addProperty("enable", module.isEnable());
             moduleObject.addProperty("key", module.getKeyCode());
-            JsonObject valuesObject = getValueJsonObject(module);
-            moduleObject.add("values", valuesObject);
+            moduleObject.add("values", getValueJsonObject(module));
             object.add(module.getName(), moduleObject);
-        }
+        });
         return object;
     }
 
+    /**
+     * 将模块的值转换为JsonObject格式。
+     * @param module 需要转换的模块
+     * @return 包含模块值的JsonObject
+     */
     private JsonObject getValueJsonObject(Module module) {
         JsonObject valuesObject = new JsonObject();
-        for (Value<?> value : module.getValues()) {
+        module.getValues().forEach(value -> {
             if (value instanceof NumberValue) {
-                valuesObject.addProperty(value.getName(), ((NumberValue)value).getValue());
+                valuesObject.addProperty(value.getName(), ((NumberValue) value).getValue());
             } else if (value instanceof BooleanValue) {
-                valuesObject.addProperty(value.getName(), ((BooleanValue)value).getValue());
+                valuesObject.addProperty(value.getName(), ((BooleanValue) value).getValue());
             } else if (value instanceof ModeValue) {
-                valuesObject.addProperty(value.getName(), ((ModeValue)value).getValue());
+                valuesObject.addProperty(value.getName(), ((ModeValue) value).getValue());
             }
-        }
+        });
         return valuesObject;
     }
 
+    /**
+     * 从JsonObject中加载模块配置。
+     * @param object 包含模块配置的JsonObject
+     */
     public void loadConfig(JsonObject object) {
-        for (Module module : Client.getInstance().getModuleManager().getModuleMap().values()) {
+        Client.getInstance().getModuleManager().getModuleMap().values().forEach(module -> {
             if (object.has(module.getName())) {
-                JsonObject moduleObject = object.get(module.getName()).getAsJsonObject();
-                if (moduleObject.has("enable")) module.setEnable(moduleObject.get("enable").getAsBoolean());
-                if (moduleObject.has("key")) module.setKeyCode(moduleObject.get("key").getAsInt());
-                if (!moduleObject.has("values")) continue;
-                JsonObject valuesObject = moduleObject.get("values").getAsJsonObject();
-                for (Value<?> value : module.getValues()) {
-                    if (valuesObject.has(value.getName())) {
-                        JsonElement theValue = valuesObject.get(value.getName());
-                        if (value instanceof NumberValue) {
-                            ((NumberValue)value).setValue(theValue.getAsNumber().floatValue());
-                        } else if (value instanceof BooleanValue) {
-                            ((BooleanValue)value).setValue(theValue.getAsBoolean());
-                        } else if (value instanceof ModeValue) {
-                            ((ModeValue)value).setValue(theValue.getAsString());
-                        }
+                JsonObject moduleObject = object.getAsJsonObject(module.getName());
+                moduleObject.entrySet().forEach(entry -> {
+                    switch (entry.getKey()) {
+                        case "enable":
+                            module.setEnable(entry.getValue().getAsBoolean());
+                            break;
+                        case "key":
+                            module.setKeyCode(entry.getValue().getAsInt());
+                            break;
+                        case "values":
+                            loadValues(module, entry.getValue().getAsJsonObject());
+                            break;
                     }
+                });
+            }
+        });
+    }
+
+    /**
+     * 加载模块的值配置。
+     * @param module 需要加载值的模块
+     * @param valuesObject 包含值的JsonObject
+     */
+    private void loadValues(Module module, JsonObject valuesObject) {
+        module.getValues().forEach(value -> {
+            JsonElement theValue = valuesObject.get(value.getName());
+            if (theValue != null) {
+                if (value instanceof NumberValue) {
+                    ((NumberValue) value).setValue(theValue.getAsNumber().floatValue());
+                } else if (value instanceof BooleanValue) {
+                    ((BooleanValue) value).setValue(theValue.getAsBoolean());
+                } else if (value instanceof ModeValue) {
+                    ((ModeValue) value).setValue(theValue.getAsString());
                 }
             }
-        }
+        });
     }
 }

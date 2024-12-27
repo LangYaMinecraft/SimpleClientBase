@@ -21,6 +21,7 @@ import java.util.Map;
 /**
  * @author LangYa
  * @since 2024/12/28 02:38
+ * 配置管理器类，负责加载和保存配置文件
  */
 @Getter
 public class ConfigManager implements Wrapper {
@@ -30,6 +31,9 @@ public class ConfigManager implements Wrapper {
     private static final JsonParser parser = new JsonParser();
     private boolean isFirst;
 
+    /**
+     * 构造函数，初始化配置管理器，创建目录并加载配置
+     */
     public ConfigManager() {
         if (!dir.exists()) {
             isFirst = dir.mkdir();
@@ -38,6 +42,9 @@ public class ConfigManager implements Wrapper {
         loadAllConfigs();
     }
 
+    /**
+     * 初始化配置，遍历所有配置类并实例化
+     */
     private void initializeConfigs() {
         InitializerUtil.initialize(clazz -> {
             if (InitializerUtil.check(Config.class, clazz)) {
@@ -51,6 +58,10 @@ public class ConfigManager implements Wrapper {
         }, this.getClass());
     }
 
+    /**
+     * 加载指定名称的配置
+     * @param name 配置名称
+     */
     public void loadConfig(String name) {
         File file = new File(dir, name + ".json");
         if (file.exists()) {
@@ -62,6 +73,10 @@ public class ConfigManager implements Wrapper {
         }
     }
 
+    /**
+     * 保存指定名称的配置
+     * @param name 配置名称
+     */
     public void saveConfig(String name) {
         File file = new File(dir, name + ".json");
         try {
@@ -72,16 +87,27 @@ public class ConfigManager implements Wrapper {
         }
     }
 
+    /**
+     * 加载所有配置
+     */
     public void loadAllConfigs() {
         configs.keySet().forEach(this::loadConfig);
         Logger.info("Loaded all configs");
     }
 
+    /**
+     * 保存所有配置
+     */
     public void saveAllConfigs() {
         configs.keySet().forEach(this::saveConfig);
         Logger.info("Saved all configs");
     }
 
+    /**
+     * 解析 JSON 文件
+     * @param file JSON 文件
+     * @return 解析后的 JsonObject
+     */
     private static JsonObject parseJson(File file) {
         try (FileReader reader = new FileReader(file)) {
             return parser.parse(reader).getAsJsonObject();

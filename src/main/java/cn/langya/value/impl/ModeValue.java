@@ -7,7 +7,6 @@ import cn.langya.value.Value;
  * @since 2024/9/1 20:12
  */
 public class ModeValue extends Value<String> {
-
     public String[] modes;
 
     public ModeValue(String name,String value, String... modes) {

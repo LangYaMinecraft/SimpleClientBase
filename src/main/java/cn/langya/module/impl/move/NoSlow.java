@@ -8,6 +8,7 @@ import cn.langya.module.Module;
 /**
  * @author LangYa
  * @since 2024/12/28 01:09
+ * NoSlow模块用于取消减速效果的实现
  */
 public class NoSlow extends Module {
     public NoSlow() {
@@ -16,11 +17,13 @@ public class NoSlow extends Module {
 
     @Override
     public String getSuffix() {
+        // 返回模块的后缀名称
         return "Vanilla";
     }
 
     @EventTarget
     public void onSlowDown(EventSlowDown event) {
+        // 当触发减速事件时，取消该事件
         event.setCancelled(true);
     }
 }

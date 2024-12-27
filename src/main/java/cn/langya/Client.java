@@ -10,6 +10,8 @@ import lombok.Getter;
 import org.lwjgl.opengl.Display;
 
 /**
+ * 客户端主类，负责客户端的初始化和管理。
+ *
  * @author LangYa
  * @since 2024/11/16 03:35
  */
@@ -28,6 +30,9 @@ public class Client {
     private ConfigManager configManager;
     private CommandManager commandManager;
 
+    /**
+     * 初始化客户端，设置各个管理器并配置显示标题。
+     */
     public void initClient() {
         Logger.info("Start initializing the client");
 
@@ -41,8 +46,10 @@ public class Client {
         Logger.info("Client side initialization complete.");
     }
 
+    /**
+     * 停止客户端，保存所有配置。
+     */
     public void stopClient() {
         this.configManager.saveAllConfigs();
     }
 }
-
