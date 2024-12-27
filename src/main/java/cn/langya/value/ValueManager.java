@@ -1,6 +1,7 @@
 package cn.langya.value;
 
 import cn.langya.Client;
+import cn.langya.Logger;
 import cn.langya.module.Module;
 
 import java.lang.reflect.Field;
@@ -27,7 +28,7 @@ public class ValueManager {
                 final Object obj = field.get(module);
                 if (obj instanceof Value) module.getValues().add((Value<?>) obj);
             } catch (IllegalAccessException e) {
-                System.out.printf("%s register value error : %s%n",module.getName(),e.getMessage());
+                Logger.error("{ } register value error : ",e,module.getName());
             }
         }
     }

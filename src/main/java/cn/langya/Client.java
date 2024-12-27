@@ -42,7 +42,7 @@ public class Client {
     }
 
     public void stopClient() {
-        this.configManager.saveAllConfig();
+        this.configManager.saveAllConfigs();
     }
 }
 
