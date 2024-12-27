@@ -20,15 +20,16 @@ public class CommandManager {
         init();
     }
 
-    public void addCommand(Class<? extends Command> command) throws InstantiationException, IllegalAccessException {
-        this.commandMap.put(command.getSimpleName(), command.newInstance());
+    public void addCommand(Command command) {
+        this.commandMap.put(command.getName(), command);
     }
 
     public void init() {
         InitializerUtil.initialize(clazz -> {
             if (!InitializerUtil.check(Command.class,clazz)) return;
             try {
-                addCommand((Class<? extends Command>) clazz);
+                Command cInstance = (Command) clazz.newInstance();
+                addCommand(cInstance);
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }

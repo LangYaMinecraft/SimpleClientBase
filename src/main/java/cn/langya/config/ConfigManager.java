@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import cn.langya.Client;
 import cn.langya.Wrapper;
+import jdk.internal.access.JavaLangReflectAccess;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 
@@ -15,11 +16,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 public class ConfigManager implements Wrapper {
-    private final List<Config> configs = new ArrayList<>();
+    private final Map<String, Config> configs = new HashMap<>();
     private final File dir = new File(mc.mcDataDir, Client.name);
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private boolean isFirst;
@@ -37,7 +40,8 @@ public class ConfigManager implements Wrapper {
         InitializerUtil.initialize(clazz -> {
             if (!InitializerUtil.check(Config.class,clazz)) return;
             try {
-                configs.add(((Class<? extends Config>) clazz).newInstance());
+                Config cInstance = (Config) clazz.newInstance();
+                configs.put(cInstance.getName(),cInstance);
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -47,12 +51,13 @@ public class ConfigManager implements Wrapper {
     }
 
     public void loadConfig(String name) {
+        name = name + ".json";
         File file = new File(dir, name);
         JsonParser jsonParser = new JsonParser();
         if (file.exists()) {
             System.out.println("Loading config: " + name);
-            for (Config config : configs) {
-                if (!config.name.equals(name)) continue;
+            for (Config config : configs.values()) {
+                if (!config.getName().equals(name)) continue;
                 try {
                     config.loadConfig(jsonParser.parse(new FileReader(file)).getAsJsonObject());
                 }
@@ -69,12 +74,13 @@ public class ConfigManager implements Wrapper {
     }
 
     public void saveConfig(String name) {
+        name = name + ".json";
         File file = new File(dir, name);
         try {
             System.out.println("Saving config: " + name);
             file.createNewFile();
-            for (Config config : configs) {
-                if (!config.name.equals(name)) continue;
+            for (Config config : configs.values()) {
+                if (!config.getName().equals(name)) continue;
                 FileUtils.writeByteArrayToFile(file, gson.toJson(config.saveConfig()).getBytes(StandardCharsets.UTF_8));
                 break;
             }
@@ -85,12 +91,12 @@ public class ConfigManager implements Wrapper {
     }
 
     public void loadAllConfig() {
-        configs.forEach(it -> loadConfig(it.name));
+        configs.values().forEach(it -> loadConfig(it.getName()));
         System.out.println("Loaded all configs");
     }
 
     public void saveAllConfig() {
-        configs.forEach(it -> saveConfig(it.name));
+        configs.values().forEach(it -> saveConfig(it.getName()));
         System.out.println("Saved all configs");
     }
 }

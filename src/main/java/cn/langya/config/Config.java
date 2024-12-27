@@ -1,9 +1,11 @@
 package cn.langya.config;
 
 import com.google.gson.JsonObject;
+import lombok.Getter;
 
+@Getter
 public abstract class Config {
-    public final String name;
+    private final String name;
     
     public Config(final String name) {
         this.name = name + ".json";

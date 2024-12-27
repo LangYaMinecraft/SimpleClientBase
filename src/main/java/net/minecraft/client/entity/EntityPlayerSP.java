@@ -2,6 +2,7 @@ package net.minecraft.client.entity;
 
 import cn.langya.Client;
 import cn.langya.event.events.EventMotion;
+import cn.langya.event.events.EventSlowDown;
 import cn.langya.event.events.EventUpdate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSoundMinecartRiding;
@@ -667,11 +668,14 @@ public class EntityPlayerSP extends AbstractClientPlayer
         boolean flag2 = this.movementInput.moveForward >= f;
         this.movementInput.updatePlayerMoveState();
 
-        if (this.isUsingItem() && !this.isRiding())
-        {
-            this.movementInput.moveStrafe *= 0.2F;
-            this.movementInput.moveForward *= 0.2F;
-            this.sprintToggleTimer = 0;
+        if (this.isUsingItem() && !this.isRiding()) {
+            EventSlowDown eventSlowDown = new EventSlowDown();
+            Client.getInstance().getEventManager().call(eventSlowDown);
+            if (!eventSlowDown.isCancelled()) {
+                this.movementInput.moveStrafe *= 0.2F;
+                this.movementInput.moveForward *= 0.2F;
+                this.sprintToggleTimer = 0;
+            }
         }
 
         this.pushOutOfBlocks(this.posX - (double)this.width * 0.35D, this.getEntityBoundingBox().minY + 0.5D, this.posZ + (double)this.width * 0.35D);

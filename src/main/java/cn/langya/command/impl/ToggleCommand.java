@@ -11,7 +11,7 @@ import cn.langya.utils.ChatUtil;
  */
 public class ToggleCommand extends Command {
     public ToggleCommand() {
-        super("t");
+        super("t",".t moduleName");
     }
 
     @Override

@@ -29,6 +29,8 @@ public class Client {
     private CommandManager commandManager;
 
     public void initClient() {
+        Logger.info("Start initializing the client");
+
         this.elementManager = new ElementManager();
         this.moduleManager = new ModuleManager();
         this.valueManager = new ValueManager();
@@ -36,6 +38,7 @@ public class Client {
         this.commandManager = new CommandManager();
 
         Display.setTitle(String.format("%s - %s",name,version));
+        Logger.info("Client side initialization complete.");
     }
 
     public void stopClient() {

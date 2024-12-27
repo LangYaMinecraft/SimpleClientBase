@@ -12,7 +12,7 @@ import org.lwjgl.input.Keyboard;
  */
 public class BindCommand extends Command {
     public BindCommand() {
-        super("bind");
+        super("bind",".bind moduleName bindKeyName");
     }
 
     @Override

@@ -44,9 +44,20 @@
             <name>marCloud-Repository</name>
             <url>https://repo.marcloud.net/</url>
         </repository>
+
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>com.github.LangYa466</groupId>
+            <artifactId>EasyLog</artifactId>
+            <version>-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>

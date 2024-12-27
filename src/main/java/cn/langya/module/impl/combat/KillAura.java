@@ -58,8 +58,6 @@ public class KillAura extends Module {
             // single
             target = targets.get(0);
         }
-
-        setSuffix(String.valueOf(targets.size()));
     }
 
     @EventTarget
@@ -81,5 +79,10 @@ public class KillAura extends Module {
         // 你忘记重置转头了
         RotationUtil.setRotations();
         super.onDisable();
+    }
+
+    @Override
+    public String getSuffix() {
+        return String.valueOf(targets.size());
     }
 }

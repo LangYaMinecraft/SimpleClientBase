@@ -23,15 +23,24 @@ public class ModuleManager {
         init();
     }
 
-    public void addModule(Class<? extends Module> module) throws InstantiationException, IllegalAccessException {
-        this.moduleMap.put(module.getSimpleName(), module.newInstance());
+    public void addModule(Module module) {
+        this.moduleMap.put(module.getName(), module);
+    }
+
+    public Module getModule(String moduleName) {
+        return moduleMap.get(moduleName);
+    }
+
+    public Module getModule(Class<?> moduleClazz) {
+        return moduleMap.get(moduleClazz.getSimpleName());
     }
 
     public void init() {
         InitializerUtil.initialize(clazz -> {
             if (!InitializerUtil.check(Module.class,clazz)) return;
             try {
-                addModule((Class<? extends Module>) clazz);
+                Module mInstance = (Module) clazz.newInstance();
+                addModule(mInstance);
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }

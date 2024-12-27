@@ -72,6 +72,7 @@ public class GuiChat extends GuiScreen
      */
     public void onGuiClosed()
     {
+        Client.getInstance().getConfigManager().saveConfig("Element");
         Keyboard.enableRepeatEvents(false);
         this.mc.ingameGUI.getChatGUI().resetScroll();
     }
