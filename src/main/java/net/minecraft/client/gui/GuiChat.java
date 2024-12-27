@@ -2,61 +2,39 @@ package net.minecraft.client.gui;
 
 import cn.langya.Client;
 import cn.langya.ui.Element;
-import com.google.common.collect.Lists;
-import java.io.IOException;
-import java.util.List;
-
 import cn.langya.utils.RenderUtil;
+import com.google.common.collect.Lists;
 import net.minecraft.network.play.client.C14PacketTabComplete;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-public class GuiChat extends GuiScreen
-{
-    private static final Logger logger = LogManager.getLogger();
-    private String historyBuffer = "";
+import java.io.IOException;
+import java.util.List;
 
-    /**
-     * keeps position of which chat message you will select when you press up, (does not increase for duplicated
-     * messages sent immediately after each other)
-     */
-    private int sentHistoryCursor = -1;
-    private boolean playerNamesFound;
-    private boolean waitingOnAutocomplete;
-    private int autocompleteIndex;
-    private final List<String> foundPlayerNames = Lists.newArrayList();
+/**
+ * @author Mojang, LangYa466
+ * 聊天窗口类，继承自GuiScreen
+ */
+public class GuiChat extends GuiScreen {
+    private String historyBuffer = ""; // 历史记录缓冲区
+    private int sentHistoryCursor = -1; // 发送历史记录光标
+    private boolean playerNamesFound, waitingOnAutocomplete; // 玩家名称发现与自动完成功能状态
+    private int autocompleteIndex; // 自动完成索引
+    private final List<String> foundPlayerNames = Lists.newArrayList(); // 已找到的玩家名称列表
+    protected GuiTextField inputField; // 输入框
+    private String defaultInputFieldText = ""; // 默认输入框文本
 
-    /** Chat entry field */
-    protected GuiTextField inputField;
+    public GuiChat() {} // 无参构造函数
 
-    /**
-     * is the text that appears when you press the chat key and the input box appears pre-filled
-     */
-    private String defaultInputFieldText = "";
-
-    public GuiChat()
-    {
-    }
-
-    public GuiChat(String defaultText)
-    {
+    public GuiChat(String defaultText) {
+        // 带默认文本的构造函数
         this.defaultInputFieldText = defaultText;
     }
 
-    /**
-     * Adds the buttons (and other controls) to the screen in question. Called when the GUI is displayed and when the
-     * window resizes, the buttonList is cleared beforehand.
-     */
-    public void initGui()
-    {
+    public void initGui() {
+        // 初始化GUI
         Keyboard.enableRepeatEvents(true);
         this.sentHistoryCursor = this.mc.ingameGUI.getChatGUI().getSentMessages().size();
         this.inputField = new GuiTextField(0, this.fontRendererObj, 4, this.height - 12, this.width - 4, 12);
@@ -64,264 +42,153 @@ public class GuiChat extends GuiScreen
         this.inputField.setEnableBackgroundDrawing(false);
         this.inputField.setFocused(true);
         this.inputField.setText(this.defaultInputFieldText);
-        this.inputField.setCanLoseFocus(false);
     }
 
-    /**
-     * Called when the screen is unloaded. Used to disable keyboard repeat events
-     */
-    public void onGuiClosed()
-    {
+    public void onGuiClosed() {
+        // GUI关闭时的处理
         Client.getInstance().getConfigManager().saveConfig("Element");
         Keyboard.enableRepeatEvents(false);
         this.mc.ingameGUI.getChatGUI().resetScroll();
     }
 
-    /**
-     * Called from the main game loop to update the screen.
-     */
-    public void updateScreen()
-    {
+    public void updateScreen() {
+        // 更新屏幕
         this.inputField.updateCursorCounter();
     }
 
-    /**
-     * Fired when a key is typed (except F11 which toggles full screen). This is the equivalent of
-     * KeyListener.keyTyped(KeyEvent e). Args : character (character on the key), keyCode (lwjgl Keyboard key code)
-     */
-    protected void keyTyped(char typedChar, int keyCode) throws IOException
-    {
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        // 处理键盘输入
         this.waitingOnAutocomplete = false;
 
-        if (keyCode == 15)
-        {
-            this.autocompletePlayerNames();
-        }
-        else
-        {
-            this.playerNamesFound = false;
-        }
-
-        if (keyCode == 1)
-        {
+        if (keyCode == 15) {
+            autocompletePlayerNames();
+        } else if (keyCode == 1) {
             this.mc.displayGuiScreen(null);
-        }
-        else if (keyCode != 28 && keyCode != 156)
-        {
-            if (keyCode == 200)
-            {
-                this.getSentHistory(-1);
-            }
-            else if (keyCode == 208)
-            {
-                this.getSentHistory(1);
-            }
-            else if (keyCode == 201)
-            {
-                this.mc.ingameGUI.getChatGUI().scroll(this.mc.ingameGUI.getChatGUI().getLineCount() - 1);
-            }
-            else if (keyCode == 209)
-            {
-                this.mc.ingameGUI.getChatGUI().scroll(-this.mc.ingameGUI.getChatGUI().getLineCount() + 1);
-            }
-            else
-            {
-                this.inputField.textboxKeyTyped(typedChar, keyCode);
-            }
-        }
-        else
-        {
+        } else if (keyCode == 28 || keyCode == 156) {
             String s = this.inputField.getText().trim();
-
-            if (s.length() > 0)
-            {
-                this.sendChatMessage(s);
+            if (!s.isEmpty()) {
+                sendChatMessage(s);
             }
-
             this.mc.displayGuiScreen(null);
+        } else if (keyCode == 200) {
+            getSentHistory(-1);
+        } else if (keyCode == 208) {
+            getSentHistory(1);
+        } else {
+            this.inputField.textboxKeyTyped(typedChar, keyCode);
         }
     }
 
-    /**
-     * Handles mouse input.
-     */
-    public void handleMouseInput() throws IOException
-    {
+    public void handleMouseInput() throws IOException {
+        // 处理鼠标输入
         super.handleMouseInput();
         int i = Mouse.getEventDWheel();
-
-        if (i != 0)
-        {
-            if (i > 1)
-            {
-                i = 1;
-            }
-
-            if (i < -1)
-            {
-                i = -1;
-            }
-
-            if (!isShiftKeyDown())
-            {
-                i *= 7;
-            }
-
+        if (i != 0) {
+            i = (i > 1) ? 1 : Math.max(i, -1);
+            if (!isShiftKeyDown()) i *= 7;
             this.mc.ingameGUI.getChatGUI().scroll(i);
         }
     }
 
-    /**
-     * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
-     */
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
-    {
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        // 处理鼠标点击事件
         if (mouseButton == 0) {
-
             for (Element element : Client.getInstance().getElementManager().getElementMap().values()) {
-                element.setHovering(element.checkHover(mouseX,mouseY));
+                element.setHovering(element.checkHover(mouseX, mouseY));
             }
 
             IChatComponent ichatcomponent = this.mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
-
-            if (this.handleComponentClick(ichatcomponent))
-            {
-                return;
-            }
+            if (handleComponentClick(ichatcomponent)) return;
         }
-
         this.inputField.mouseClicked(mouseX, mouseY, mouseButton);
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
+        // 处理鼠标释放事件
         for (Element element : Client.getInstance().getElementManager().getElementMap().values()) {
             element.setHovering(false);
         }
         super.mouseReleased(mouseX, mouseY, state);
     }
 
-    /**
-     * Sets the text of the chat
-     *
-     * @param newChatText The new chat text to be set
-     * @param shouldOverwrite Determines if the text currently in the chat should be overwritten or appended
-     */
-    protected void setText(String newChatText, boolean shouldOverwrite)
-    {
-        if (shouldOverwrite)
-        {
+    protected void setText(String newChatText, boolean shouldOverwrite) {
+        // 设置文本
+        if (shouldOverwrite) {
             this.inputField.setText(newChatText);
-        }
-        else
-        {
+        } else {
             this.inputField.writeText(newChatText);
         }
     }
 
-    public void autocompletePlayerNames()
-    {
-        if (this.playerNamesFound)
-        {
+    public void autocompletePlayerNames() {
+        // 自动完成玩家名称
+        if (this.playerNamesFound) {
             this.inputField.deleteFromCursor(this.inputField.func_146197_a(-1, this.inputField.getCursorPosition(), false) - this.inputField.getCursorPosition());
-
-            if (this.autocompleteIndex >= this.foundPlayerNames.size())
-            {
+            if (this.autocompleteIndex >= this.foundPlayerNames.size()) {
                 this.autocompleteIndex = 0;
             }
-        }
-        else
-        {
+        } else {
             int i = this.inputField.func_146197_a(-1, this.inputField.getCursorPosition(), false);
             this.foundPlayerNames.clear();
             this.autocompleteIndex = 0;
             String s = this.inputField.getText().substring(i).toLowerCase();
             String s1 = this.inputField.getText().substring(0, this.inputField.getCursorPosition());
-            this.sendAutocompleteRequest(s1, s);
+            sendAutocompleteRequest(s1, s);
 
-            if (this.foundPlayerNames.isEmpty())
-            {
-                return;
-            }
+            if (this.foundPlayerNames.isEmpty()) return;
 
             this.playerNamesFound = true;
             this.inputField.deleteFromCursor(i - this.inputField.getCursorPosition());
         }
 
-        if (this.foundPlayerNames.size() > 1)
-        {
+        if (this.foundPlayerNames.size() > 1) {
             StringBuilder stringbuilder = new StringBuilder();
-
-            for (String s2 : this.foundPlayerNames)
-            {
-                if (stringbuilder.length() > 0)
-                {
-                    stringbuilder.append(", ");
-                }
-
+            for (String s2 : this.foundPlayerNames) {
+                if (stringbuilder.length() > 0) stringbuilder.append(", ");
                 stringbuilder.append(s2);
             }
-
             this.mc.ingameGUI.getChatGUI().printChatMessageWithOptionalDeletion(new ChatComponentText(stringbuilder.toString()), 1);
         }
 
         this.inputField.writeText(this.foundPlayerNames.get(this.autocompleteIndex++));
     }
 
-    private void sendAutocompleteRequest(String p_146405_1_, String p_146405_2_)
-    {
-        if (p_146405_1_.length() >= 1)
-        {
+    private void sendAutocompleteRequest(String p_146405_1_, String p_146405_2_) {
+        // 发送自动完成请求
+        if (!p_146405_1_.isEmpty()) {
             BlockPos blockpos = null;
-
-            if (this.mc.objectMouseOver != null && this.mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
-            {
+            if (this.mc.objectMouseOver != null && this.mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
                 blockpos = this.mc.objectMouseOver.getBlockPos();
             }
-
             this.mc.thePlayer.sendQueue.addToSendQueue(new C14PacketTabComplete(p_146405_1_, blockpos));
             this.waitingOnAutocomplete = true;
         }
     }
 
-    /**
-     * input is relative and is applied directly to the sentHistoryCursor so -1 is the previous message, 1 is the next
-     * message from the current cursor position
-     *
-     * @param msgPos The position of the message in the sent chat history relative to the current message.
-     */
-    public void getSentHistory(int msgPos)
-    {
+    public void getSentHistory(int msgPos) {
+        // 获取发送历史
         int i = this.sentHistoryCursor + msgPos;
         int j = this.mc.ingameGUI.getChatGUI().getSentMessages().size();
         i = MathHelper.clamp_int(i, 0, j);
 
-        if (i != this.sentHistoryCursor)
-        {
-            if (i == j)
-            {
+        if (i != this.sentHistoryCursor) {
+            if (i == j) {
                 this.sentHistoryCursor = j;
                 this.inputField.setText(this.historyBuffer);
-            }
-            else
-            {
-                if (this.sentHistoryCursor == j)
-                {
+            } else {
+                if (this.sentHistoryCursor == j) {
                     this.historyBuffer = this.inputField.getText();
                 }
-
                 this.inputField.setText(this.mc.ingameGUI.getChatGUI().getSentMessages().get(i));
                 this.sentHistoryCursor = i;
             }
         }
     }
 
-    /**
-     * Draws the screen and all the components in it. Args : mouseX, mouseY, renderPartialTicks
-     */
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        // 绘制屏幕
         for (Element element : Client.getInstance().getElementManager().getElementMap().values()) {
             if (element.isHovering()) {
                 if (Client.getInstance().getModuleManager().getModuleMap().get(element.getName()).isEnable()) {
@@ -334,26 +201,21 @@ public class GuiChat extends GuiScreen
         drawRect(2, this.height - 14, this.width - 2, this.height - 2, Integer.MIN_VALUE);
         this.inputField.drawTextBox();
         IChatComponent ichatcomponent = this.mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
-
-        if (ichatcomponent != null && ichatcomponent.getChatStyle().getChatHoverEvent() != null)
-        {
+        if (ichatcomponent != null && ichatcomponent.getChatStyle().getChatHoverEvent() != null) {
             this.handleComponentHover(ichatcomponent, mouseX, mouseY);
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
-    public void onAutocompleteResponse(String[] p_146406_1_)
-    {
-        if (this.waitingOnAutocomplete)
-        {
+    public void onAutocompleteResponse(String[] p_146406_1_) {
+        // 处理自动完成响应
+        if (this.waitingOnAutocomplete) {
             this.playerNamesFound = false;
             this.foundPlayerNames.clear();
 
-            for (String s : p_146406_1_)
-            {
-                if (s.length() > 0)
-                {
+            for (String s : p_146406_1_) {
+                if (!s.isEmpty()) {
                     this.foundPlayerNames.add(s);
                 }
             }
@@ -361,24 +223,18 @@ public class GuiChat extends GuiScreen
             String s1 = this.inputField.getText().substring(this.inputField.func_146197_a(-1, this.inputField.getCursorPosition(), false));
             String s2 = StringUtils.getCommonPrefix(p_146406_1_);
 
-            if (s2.length() > 0 && !s1.equalsIgnoreCase(s2))
-            {
+            if (!s2.isEmpty() && !s1.equalsIgnoreCase(s2)) {
                 this.inputField.deleteFromCursor(this.inputField.func_146197_a(-1, this.inputField.getCursorPosition(), false) - this.inputField.getCursorPosition());
                 this.inputField.writeText(s2);
-            }
-            else if (this.foundPlayerNames.size() > 0)
-            {
+            } else if (!this.foundPlayerNames.isEmpty()) {
                 this.playerNamesFound = true;
-                this.autocompletePlayerNames();
+                autocompletePlayerNames();
             }
         }
     }
 
-    /**
-     * Returns true if this GUI should pause the game when it is displayed in single-player
-     */
-    public boolean doesGuiPauseGame()
-    {
+    public boolean doesGuiPauseGame() {
+        // 检查GUI是否暂停游戏
         return false;
     }
 }
