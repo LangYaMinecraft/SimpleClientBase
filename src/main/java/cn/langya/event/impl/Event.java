@@ -1,7 +1,7 @@
 package cn.langya.event.impl;
 
 /**
- * Marker interface for events.
+ * 事件的标记接口。
  */
 public interface Event {
     // This interface doesn't contain any methods or fields.

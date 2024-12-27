@@ -1,19 +1,19 @@
 package cn.langya.event.impl;
 
 /**
- * An abstract class for cancellable events.
- * This class implements the {@link Event} and {@link Cancellable} interfaces.
+ * 可取消事件的抽象类。
+ * 该类实现了 {@link Event} 和 {@link Cancellable} 接口。
  */
 public abstract class CancellableEvent implements Event, Cancellable {
 	/**
-	 * A flag indicating whether the event has been cancelled.
+	 * 一个标志指示事件是否已被取消。
 	 */
 	private boolean cancelled;
 
 	/**
-	 * Sets the cancellation status of the event.
+	 * 设置事件的取消状态。
 	 *
-	 * @param cancelled {@code true} to cancel the event, {@code false} to allow it.
+	 * @param cancelled {@code true} 取消事件, {@code false} 允许事件继续。
 	 */
 	@Override
 	public void setCancelled(boolean cancelled) {
@@ -21,12 +21,13 @@ public abstract class CancellableEvent implements Event, Cancellable {
 	}
 
 	/**
-	 * Checks if the event has been cancelled.
+	 * 检查事件是否已被取消。
 	 *
-	 * @return {@code true} if the event is cancelled, {@code false} otherwise.
+	 * @return {@code true} 如果事件被取消, {@code false} 否则。
 	 */
 	@Override
 	public boolean isCancelled() {
 		return cancelled;
 	}
 }
+

@@ -1,43 +1,42 @@
 package cn.langya.utils;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * @author cubk1, LangYa466
- * 工具类，用于初始化和检查类
+ * @author cubk, LangYa
+ * Utility class for class initialization and checking.
+ * 工具类，用于类的初始化和检查。
  */
 public class InitializerUtil {
-   /**
-    * 初始化方法，接受一个处理器和输入类，遍历类的路径并应用处理器。
-    *
-    * @param handler 处理类的消费者
-    * @param inputClazz 输入的类
-    */
-   public static void initialize(Consumer<Class<?>> handler, Class<?> inputClazz){
-        List<String> paths = new ArrayList<>();
 
-        paths.add(inputClazz.getName().replace("." + inputClazz.getSimpleName(),"."));
+    /**
+     * Initializes classes in the specified package and applies the handler to each class.
+     * 初始化指定包中的类，并将处理器应用于每个类。
+     *
+     * @param handler  The handler to process each class.
+     * @param inputClazz The class whose package will be processed.
+     */
+    public static void initialize(Consumer<Class<?>> handler, Class<?> inputClazz) {
+        String packagePath = inputClazz.getPackage().getName() + ".";
 
-        for (String path : paths) {
-            if (!ReflectionUtil.dirExist(path)) continue;
-            Class<?>[] classes = ReflectionUtil.getClassesInPackage(path);
-            for (Class<?> clazz : classes) {
+        // Check if the package exists and process classes in it
+        // 检查包是否存在并处理其中的类
+        if (ReflectionUtil.dirExist(packagePath)) {
+            for (Class<?> clazz : ReflectionUtil.getClassesInPackage(packagePath)) {
                 handler.accept(clazz);
             }
-            break;
         }
     }
 
     /**
-     * 检查一个类是否可以被另一个类赋值。
+     * Checks if one class can be assigned to another.
+     * 检查一个类是否可以被赋值给另一个类。
      *
-     * @param inputClazz 输入的类
-     * @param checkClazz 需要检查的类
-     * @return 如果可以赋值，返回 true；否则返回 false
+     * @param inputClazz The input class.
+     * @param checkClazz The class to check.
+     * @return true if inputClazz can be assigned to checkClazz, false otherwise.
      */
-    public static boolean check(Class<?> inputClazz,Class<?> checkClazz) {
-       return inputClazz.isAssignableFrom(checkClazz);
+    public static boolean check(Class<?> inputClazz, Class<?> checkClazz) {
+        return inputClazz.isAssignableFrom(checkClazz);
     }
 }
