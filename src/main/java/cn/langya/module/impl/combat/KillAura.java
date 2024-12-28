@@ -75,6 +75,6 @@ public class KillAura extends Module {
 
     @Override
     public String getSuffix() {
-        return String.valueOf(target != null ? 1 : 0); // 返回当前是否有目标
+        return String.valueOf(target != null ? target.getName() : null); // 返回当前是否有目标
     }
 }
