@@ -55,7 +55,15 @@
         <dependency>
             <groupId>com.github.LangYa466</groupId>
             <artifactId>EasyLog</artifactId>
-            <version>-SNAPSHOT</version>
+            <version>1.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.langya</groupId>
+            <artifactId>EasyLog</artifactId>
+            <version>1.6</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/EasyLog-1.6-SNAPSHOT.jar</systemPath>
         </dependency>
 
         <dependency>
