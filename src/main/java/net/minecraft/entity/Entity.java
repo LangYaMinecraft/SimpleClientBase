@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+
+import cn.langya.Client;
+import cn.langya.event.events.EventPlayerMoveUpdate;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;
@@ -12,6 +15,7 @@ import net.minecraft.block.BlockWall;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.state.pattern.BlockPattern;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.CommandResultStats;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.crash.CrashReport;
@@ -1007,8 +1011,16 @@ public abstract class Entity implements ICommandSender
         return this.worldObj.isMaterialInBB(this.getEntityBoundingBox().expand(-0.10000000149011612D, -0.4000000059604645D, -0.10000000149011612D), Material.lava);
     }
 
-    public void moveFlying(float strafe, float forward, float friction)
-    {
+    public void moveFlying(float strafe, float forward, float friction) {
+        EventPlayerMoveUpdate playerMovementEvent = new EventPlayerMoveUpdate(strafe, forward, friction, this.rotationYaw, this.rotationPitch);
+        if (this instanceof EntityPlayerSP) {
+            Client.getInstance().getEventManager().call(playerMovementEvent);
+        }
+        if (playerMovementEvent.isCancelled()) return;
+
+        strafe = playerMovementEvent.getStrafe();
+        forward = playerMovementEvent.getForward();
+        friction = playerMovementEvent.getFriction();
         float f = strafe * strafe + forward * forward;
 
         if (f >= 1.0E-4F)

@@ -1,11 +1,11 @@
 package cn.langya.utils;
 
 import cn.langya.Wrapper;
-import cn.langya.event.annotations.EventPriority;
 import cn.langya.event.annotations.EventTarget;
 import cn.langya.event.events.EventMotion;
+import cn.langya.event.events.EventJump;
+import cn.langya.event.events.EventPlayerMoveUpdate;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 
@@ -13,40 +13,62 @@ public class RotationUtil implements Wrapper {
     public static final RotationUtil INSTANCE = new RotationUtil();
 
     @Getter
-    @Setter
     private static float[] rotations = null;
+    @Getter
+    private static float yaw, pitch;
+    private static boolean moveFix;
 
     public static void setRotations() {
         rotations = null;
+        moveFix = false;
+    }
+
+    public static void setRotations(float[] rotations) {
+        setRotations(rotations, true);
+    }
+
+    public static void setRotations(float[] rotations, boolean moveFix) {
+        RotationUtil.rotations = rotations;
+        RotationUtil.moveFix = moveFix;
+        yaw = rotations[0];
+        pitch = rotations[1];
     }
 
     @EventTarget
-    // 看我超低优先级害死你们这群在module瞎改转头的
-    @EventPriority(value = 114514)
-    public void onMotion(EventMotion event) {
+    public void setRotations(EventMotion event) {
         if (rotations != null) {
             event.setRotations(rotations);
         }
     }
 
-    public static float[] getRotationsNeeded(Entity entity) {
-        if (entity == null) {
-            // 错误处理：实体为null
-            throw new IllegalArgumentException("Entity cannot be null");
+    @EventTarget
+    public void onPlayerMoveUpdateEvent(EventPlayerMoveUpdate event) {
+        if (moveFix) {
+            event.setYaw(yaw);
         }
+    }
 
-        final double xSize = entity.posX - mc.thePlayer.posX;
-        final double ySize = entity.posY + entity.getEyeHeight() / 2 - (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
-        final double zSize = entity.posZ - mc.thePlayer.posZ;
+    @EventTarget
+    public void onJumpFixEvent(EventJump event) {
+        if (moveFix) {
+            event.setYaw(yaw);
+        }
+    }
 
-        final double theta = MathHelper.sqrt_double(xSize * xSize + zSize * zSize);
-        final float yaw = (float) (Math.atan2(zSize, xSize) * 180 / Math.PI) - 90;
-        final float pitch = (float) (-(Math.atan2(ySize, theta) * 180 / Math.PI));
+    public static float[] getRotationsNeeded(Entity entity) {
+        if (entity == null) throw new IllegalArgumentException("Entity cannot be null"); // 总有些傻鸟喜欢传null entity
+
+        double x = entity.posX - mc.thePlayer.posX;
+        double y = (entity.posY + entity.getEyeHeight() / 2) - (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
+        double z = entity.posZ - mc.thePlayer.posZ;
+
+        double theta = Math.hypot(x, z);
+        float yaw = (float) Math.toDegrees(Math.atan2(z, x)) - 90;
+        float pitch = (float) -Math.toDegrees(Math.atan2(y, theta));
 
         float newYaw = mc.thePlayer.rotationYaw + MathHelper.wrapAngleTo180_float(yaw - mc.thePlayer.rotationYaw);
         float newPitch = mc.thePlayer.rotationPitch + MathHelper.wrapAngleTo180_float(pitch - mc.thePlayer.rotationPitch);
 
-        // 使用数组来避免冗余计算
-        return new float[]{newYaw % 360, newPitch % 360.0f};
+        return new float[]{newYaw, newPitch};
     }
 }

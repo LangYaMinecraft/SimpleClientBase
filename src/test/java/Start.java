@@ -6,9 +6,9 @@ import net.minecraft.client.main.Main;
 /**
  * Welcome to MCP 1.8.9 for Maven
  * This repository has been created to make working with MCP 1.8.9 easier and cleaner.
- * You can view the MCP 1.8.9 repo here: https://github.com/Marcelektro/MCP-919
- * If you have any questions regarding this, feel free to contact me here: https://marcloud.net/discord
- *
+ * You can view the MCP 1.8.9 repo here: <a href="https://github.com/Marcelektro/MCP-919">...</a>
+ * If you have any questions regarding this, feel free to contact me here: <a href="https://marcloud.net/discord">...</a>
+ * <p>
  * Have fun with the MC development ^^
  * Marcelektro
  */
