@@ -3,6 +3,7 @@ package cn.langya.module.impl.render;
 import cn.langya.module.Category;
 import cn.langya.module.Module;
 import cn.langya.ui.clickgui.SimpleClickGUI;
+import org.lwjgl.input.Keyboard;
 
 /**
  * @author LangYa466
@@ -14,6 +15,7 @@ public class ClickGUI extends Module {
      */
     public ClickGUI() {
         super(Category.Render);
+        setKeyCode(Keyboard.KEY_RSHIFT);
     }
 
     @Override
