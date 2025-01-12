@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 字体管理器
  */
 public class FontManager {
-    private static final Map<Integer, UFontRenderer> hanYiMap = new ConcurrentHashMap<>();
+    private static final Map<Integer, UFontRenderer> clientFontMap = new ConcurrentHashMap<>();
 
     // 获取字体渲染器的方法
     private static UFontRenderer getRenderer(String name, int size, Map<Integer, UFontRenderer> map) {
@@ -18,7 +18,7 @@ public class FontManager {
     }
 
     // 获取汉仪字体的方法
-    public static UFontRenderer hanYi(int size) {
-        return getRenderer("HYQiHeiX1-65S", size, hanYiMap);
+    public static UFontRenderer vivo(int size) {
+        return getRenderer("VivoSansSCVF", size, clientFontMap);
     }
 }

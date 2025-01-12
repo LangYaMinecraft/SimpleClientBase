@@ -61,7 +61,7 @@ public class KillAura extends Module {
         if (event.isPre() && attackTimer.hasReached(1000 / getCPS())) {
             RotationUtil.setRotations(RotationUtil.getRotationsNeeded(target), moveFixValue.getValue());
             mc.thePlayer.swingItem();
-            mc.playerController.attackEntity(mc.thePlayer, target);
+            if (target.getDistanceToEntity(mc.thePlayer) <= attackRangeValue.getValue()) mc.playerController.attackEntity(mc.thePlayer, target);
             attackTimer.reset();
         }
     }

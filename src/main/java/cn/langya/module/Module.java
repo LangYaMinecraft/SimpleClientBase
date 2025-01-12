@@ -22,7 +22,7 @@ public class Module implements Wrapper {
     private final String name;
     private final Category category;
     private String suffix = "";
-    // private final String description;
+    private String description = "";
     private boolean enable;
     private List<Value<?>> values;
     private int keyCode = 114514;
