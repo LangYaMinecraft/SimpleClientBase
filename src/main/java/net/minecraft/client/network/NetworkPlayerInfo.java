@@ -13,20 +13,70 @@ import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldSettings;
 
-public class NetworkPlayerInfo
-{
+public class NetworkPlayerInfo {
+    /**
+     * 玩家对应的游戏档案信息。
+     */
     private final GameProfile gameProfile;
+
+    /**
+     * 玩家当前的游戏模式（生存、创造、冒险等）。
+     */
     private WorldSettings.GameType gameType;
+
+    /**
+     * 服务器响应时间（延迟），单位为毫秒。
+     */
     private int responseTime;
+
+    /**
+     * 是否已加载玩家的皮肤和其他纹理。
+     */
     private boolean playerTexturesLoaded = false;
+
+    /**
+     * 玩家皮肤的资源位置。
+     */
     private ResourceLocation locationSkin;
+
+    /**
+     * 玩家斗篷的资源位置，如果没有斗篷，则可能为 null。
+     */
     private ResourceLocation locationCape;
+
+    /**
+     * 皮肤类型（例如 "default" 或 "slim"）。
+     */
     private String skinType;
+
+    /**
+     * 玩家在聊天或界面中的显示名称（可能带有格式化）。
+     */
     private IChatComponent displayName;
+
+    /**
+     * 未知用途的整数字段，可能与玩家状态或计数器相关。
+     */
     private int field_178873_i = 0;
+
+    /**
+     * 未知用途的整数字段，可能与网络或渲染相关。
+     */
     private int field_178870_j = 0;
+
+    /**
+     * 记录某个时间戳（单位：毫秒），可能用于超时、动画或状态更新。
+     */
     private long field_178871_k = 0L;
+
+    /**
+     * 记录某个时间戳（单位：毫秒），可能用于网络同步或状态管理。
+     */
     private long field_178868_l = 0L;
+
+    /**
+     * 记录某个时间戳（单位：毫秒），可能用于服务器响应或玩家活动追踪。
+     */
     private long field_178869_m = 0L;
 
     public NetworkPlayerInfo(GameProfile p_i46294_1_)

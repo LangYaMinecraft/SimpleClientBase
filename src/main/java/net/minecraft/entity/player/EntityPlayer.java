@@ -76,45 +76,82 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
 
 @SuppressWarnings("incomplete-switch")
-public abstract class EntityPlayer extends EntityLivingBase
-{
+public abstract class EntityPlayer extends EntityLivingBase {
+    // 玩家的物品栏
     public InventoryPlayer inventory = new InventoryPlayer(this);
+    // 玩家的末地箱子物品栏
     private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
+    // 当前打开的容器
     public Container inventoryContainer;
+    // 正在打开的容器
     public Container openContainer;
+    // 玩家的食物状态
     protected FoodStats foodStats = new FoodStats();
+    // 飞行切换计时器
     protected int flyToggleTimer;
+    // 上一个相机的yaw值
     public float prevCameraYaw;
+    // 当前相机的yaw值
     public float cameraYaw;
+    // 经验值冷却计时器
     public int xpCooldown;
+    // 上一个追踪目标的位置X坐标
     public double prevChasingPosX;
+    // 上一个追踪目标的位置Y坐标
     public double prevChasingPosY;
+    // 上一个追踪目标的位置Z坐标
     public double prevChasingPosZ;
+    // 当前追踪目标的位置X坐标
     public double chasingPosX;
+    // 当前追踪目标的位置Y坐标
     public double chasingPosY;
+    // 当前追踪目标的位置Z坐标
     public double chasingPosZ;
+    // 玩家是否正在睡觉
     protected boolean sleeping;
+    // 玩家的位置坐标
     public BlockPos playerLocation;
+    // 睡觉计时器
     private int sleepTimer;
+    // 渲染偏移量X
     public float renderOffsetX;
+    // 渲染偏移量Y
     public float renderOffsetY;
+    // 渲染偏移量Z
     public float renderOffsetZ;
+    // 玩家的出生点坐标
     private BlockPos spawnChunk;
+    // 是否强制设置出生点
     private boolean spawnForced;
+    // 开始乘坐矿车的坐标
     private BlockPos startMinecartRidingCoordinate;
+    // 玩家的能力
     public PlayerCapabilities capabilities = new PlayerCapabilities();
+    // 玩家的经验等级
     public int experienceLevel;
+    // 玩家的总经验值
     public int experienceTotal;
+    // 玩家的经验进度
     public float experience;
+    // 经验值种子
     private int xpSeed;
+    // 正在使用的物品
     private ItemStack itemInUse;
+    // 正在使用的物品的计数
     private int itemInUseCount;
+    // 在地面上的速度
     protected float speedOnGround = 0.1F;
+    // 在空中的速度
     protected float speedInAir = 0.02F;
+    // 上一次播放经验值音效的时间
     private int lastXPSound;
+    // 玩家的游戏配置文件
     private final GameProfile gameProfile;
+    // 是否已经减少了调试信息
     private boolean hasReducedDebug = false;
+    // 玩家钓到的鱼实体
     public EntityFishHook fishEntity;
+
 
     public EntityPlayer(World worldIn, GameProfile gameProfileIn)
     {

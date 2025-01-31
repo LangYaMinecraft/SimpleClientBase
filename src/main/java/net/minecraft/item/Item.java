@@ -44,19 +44,30 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class Item
-{
+public class Item {
+    // 物品注册表，用于存储物品及其对应的资源位置
     public static final RegistryNamespaced<ResourceLocation, Item> itemRegistry = new RegistryNamespaced();
+    // 块到物品的映射表，用于快速查找与特定块关联的物品
     private static final Map<Block, Item> BLOCK_TO_ITEM = Maps.<Block, Item>newHashMap();
+    // 物品属性修改器的UUID，用于唯一标识特定的修改器
     protected static final UUID itemModifierUUID = UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF");
+    // 创意标签，指定该物品应显示在哪个标签页下
     private CreativeTabs tabToDisplayOn;
+    // 随机数生成器，用于生成物品相关的随机数
     protected static Random itemRand = new Random();
+    // 物品的最大堆叠数量，默认为64
     protected int maxStackSize = 64;
+    // 物品的最大耐久度
     private int maxDamage;
+    // 布尔值，指示物品是否具有3D模型
     protected boolean bFull3D;
+    // 布尔值，指示物品是否有子类型
     protected boolean hasSubtypes;
+    // 容器物品，当该物品被使用后可能生成的物品
     private Item containerItem;
+    // 药水效果字符串，表示该物品可能具有的药水效果
     private String potionEffect;
+    // 物品的非本地化名称，用于后续的翻译和显示
     private String unlocalizedName;
 
     public static int getIdFromItem(Item itemIn)

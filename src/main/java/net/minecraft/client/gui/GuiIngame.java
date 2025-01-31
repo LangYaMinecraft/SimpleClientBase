@@ -47,36 +47,87 @@ import net.minecraft.util.StringUtils;
 import net.minecraft.world.border.WorldBorder;
 import net.optifine.CustomColors;
 
-public class GuiIngame extends Gui
-{
+public class GuiIngame extends Gui {
+    // 定义了几个资源定位符，用于加载不同的纹理资源
     private static final ResourceLocation vignetteTexPath = new ResourceLocation("textures/misc/vignette.png");
     private static final ResourceLocation widgetsTexPath = new ResourceLocation("textures/gui/widgets.png");
     private static final ResourceLocation pumpkinBlurTexPath = new ResourceLocation("textures/misc/pumpkinblur.png");
+
+    // 随机数生成器实例
     private final Random rand = new Random();
+
+    // Minecraft主实例引用
     private final Minecraft mc;
+
+    // 物品渲染器实例
     private final RenderItem itemRenderer;
+
+    // 持久聊天GUI实例
     private final GuiNewChat persistantChatGUI;
+
+    // 直播指示器GUI实例
     private final GuiStreamIndicator streamIndicator;
+
+    // 更新计数器，用于跟踪游戏状态更新
     private int updateCounter;
+
+    // 正在播放的记录名称
     private String recordPlaying = "";
+
+    // 记录播放剩余时间
     private int recordPlayingUpFor;
+
+    // 标记记录是否正在播放
     private boolean recordIsPlaying;
+
+    // 上一次的 vignette 亮度值
     public float prevVignetteBrightness = 1.0F;
+
+    // 项目高亮剩余刻数
     private int remainingHighlightTicks;
+
+    // 正在高亮显示的物品堆栈
     private ItemStack highlightingItemStack;
+
+    // 调试信息覆盖层GUI实例
     private final GuiOverlayDebug overlayDebug;
+
+    // 观光者模式GUI实例
     private final GuiSpectator spectatorGui;
+
+    // 玩家列表覆盖层GUI实例
     private final GuiPlayerTabOverlay overlayPlayerList;
+
+    // 标题显示计时器
     private int titlesTimer;
+
+    // 当前显示的主标题
     private String displayedTitle = "";
+
+    // 当前显示的副标题
     private String displayedSubTitle = "";
+
+    // 标题淡入时间
     private int titleFadeIn;
+
+    // 标题显示时间
     private int titleDisplayTime;
+
+    // 标题淡出时间
     private int titleFadeOut;
+
+    // 玩家当前生命值
     private int playerHealth = 0;
+
+    // 上一次记录的生命值
     private int lastPlayerHealth = 0;
+
+    // 上一次系统时间
     private long lastSystemTime = 0L;
+
+    // 生命值更新计数器
     private long healthUpdateCounter = 0L;
+
 
     public GuiIngame(Minecraft mcIn)
     {

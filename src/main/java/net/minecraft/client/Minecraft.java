@@ -188,104 +188,264 @@ import org.lwjgl.opengl.OpenGLException;
 import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
 
-public class Minecraft implements IThreadListener, IPlayerUsage
-{
+public class Minecraft implements IThreadListener, IPlayerUsage {
+    // 日志记录器
     private static final Logger logger = LogManager.getLogger();
+
+    // Mojang Logo 资源位置
     private static final ResourceLocation locationMojangPng = new ResourceLocation("textures/gui/title/mojang.png");
+
+    // 判断是否运行在 MacOS 上
     public static final boolean isRunningOnMac = Util.getOSType() == Util.EnumOS.OSX;
+
+    // 内存保留 10MB
     public static byte[] memoryReserve = new byte[10485760];
-    private static final List<DisplayMode> macDisplayModes = Lists.newArrayList(new DisplayMode[] {new DisplayMode(2560, 1600), new DisplayMode(2880, 1800)});
+
+    // Mac 显示模式支持的分辨率列表
+    private static final List<DisplayMode> macDisplayModes = Lists.newArrayList(
+            new DisplayMode(2560, 1600),
+            new DisplayMode(2880, 1800)
+    );
+
+    // 资源包文件夹
     private final File fileResourcepacks;
+
+    // Twitch 相关属性
     private final PropertyMap twitchDetails;
+
+    // 用户属性信息
     private final PropertyMap profileProperties;
+
+    // 当前服务器数据
     private ServerData currentServerData;
+
+    // 纹理管理器
     private TextureManager renderEngine;
+
+    // Minecraft 单例实例
     private static Minecraft theMinecraft;
+
+    // 玩家控制器
     public PlayerControllerMP playerController;
+
+    // 是否全屏模式
     private boolean fullscreen;
+
+    // 是否启用 OpenGL 错误检查
     private boolean enableGLErrorChecking = true;
+
+    // 游戏是否崩溃
     private boolean hasCrashed;
+
+    // 崩溃报告
     private CrashReport crashReporter;
+
+    // 显示窗口的宽度和高度
     public int displayWidth;
     public int displayHeight;
+
+    // 是否连接到 Realms
     private boolean connectedToRealms = false;
+
+    // 游戏计时器
     private Timer timer = new Timer(20.0F);
+
+    // 玩家使用统计收集器
     private PlayerUsageSnooper usageSnooper = new PlayerUsageSnooper("client", this, MinecraftServer.getCurrentTimeMillis());
+
+    // 当前的世界实例
     public WorldClient theWorld;
+
+    // 渲染全局对象
     public RenderGlobal renderGlobal;
+
+    // 渲染管理器
     private RenderManager renderManager;
+
+    // 物品渲染
     private RenderItem renderItem;
     private ItemRenderer itemRenderer;
+
+    // 当前玩家实例
     public EntityPlayerSP thePlayer;
+
+    // 当前的渲染视角实体
     private Entity renderViewEntity;
+
+    // 鼠标指向的实体
     public Entity pointedEntity;
+
+    // 视觉效果渲染器
     public EffectRenderer effectRenderer;
+
+    // 玩家登录的会话信息
     private final Session session;
+
+    // 游戏是否暂停
     private boolean isGamePaused;
+
+    // 字体渲染器
     public FontRenderer fontRendererObj;
     public FontRenderer standardGalacticFontRenderer;
+
+    // 当前的 GUI 界面
     public GuiScreen currentScreen;
+
+    // 加载界面渲染器
     public LoadingScreenRenderer loadingScreen;
+
+    // 实体渲染器
     public EntityRenderer entityRenderer;
+
+    // 左键点击计数器
     private int leftClickCounter;
+
+    // 临时显示宽高（用于窗口调整时）
     private int tempDisplayWidth;
     private int tempDisplayHeight;
+
+    // 内置服务器实例
     private IntegratedServer theIntegratedServer;
+
+    // 游戏成就 GUI
     public GuiAchievement guiAchievement;
+
+    // 游戏内 GUI
     public GuiIngame ingameGUI;
+
+    // 是否跳过世界渲染
     public boolean skipRenderWorld;
+
+    // 鼠标指向的对象
     public MovingObjectPosition objectMouseOver;
+
+    // 游戏设置
     public GameSettings gameSettings;
+
+    // 鼠标助手
     public MouseHelper mouseHelper;
+
+    // Minecraft 数据目录
     public final File mcDataDir;
+
+    // 资源文件目录
     private final File fileAssets;
+
+    // 启动的游戏版本
     private final String launchedVersion;
+
+    // 网络代理
     private final Proxy proxy;
+
+    // 存档管理器
     private ISaveFormat saveLoader;
+
+    // 调试 FPS
     private static int debugFPS;
+
+    // 右键点击延迟计时器
     private int rightClickDelayTimer;
+
+    // 服务器名称和端口
     private String serverName;
     private int serverPort;
+
+    // 游戏是否聚焦（窗口激活）
     public boolean inGameHasFocus;
+
+    // 当前系统时间
     long systemTime = getSystemTime();
+
+    // 玩家加入计数器
     private int joinPlayerCounter;
+
+    // 帧时间记录器
     public final FrameTimer frameTimer = new FrameTimer();
+
+    // 游戏启动时间（纳秒）
     long startNanoTime = System.nanoTime();
+
+    // JVM 是否为 64 位
     private final boolean jvm64bit;
+
+    // 是否为试玩版
     private final boolean isDemo;
+
+    // 网络管理器
     private NetworkManager myNetworkManager;
+
+    // 是否运行内置服务器
     private boolean integratedServerIsRunning;
+
+    // 性能分析工具
     public final Profiler mcProfiler = new Profiler();
+
+    // 调试崩溃按键时间
     private long debugCrashKeyPressTime = -1L;
+
+    // 资源管理器
     private IReloadableResourceManager mcResourceManager;
+
+    // 元数据解析器
     private final IMetadataSerializer metadataSerializer_ = new IMetadataSerializer();
-    private final List<IResourcePack> defaultResourcePacks = Lists.<IResourcePack>newArrayList();
+
+    // 默认资源包列表
+    private final List<IResourcePack> defaultResourcePacks = Lists.newArrayList();
+
+    // 默认资源包
     private final DefaultResourcePack mcDefaultResourcePack;
+
+    // 资源包存储库
     private ResourcePackRepository mcResourcePackRepository;
+
+    // 语言管理器
     private LanguageManager mcLanguageManager;
+
+    // 游戏直播流
     private IStream stream;
+
+    // 帧缓冲对象
     private Framebuffer framebufferMc;
+
+    // 纹理图集
     private TextureMap textureMapBlocks;
+
+    // 声音处理
     private SoundHandler mcSoundHandler;
     private MusicTicker mcMusicTicker;
+
+    // Mojang Logo 资源
     private ResourceLocation mojangLogo;
+
+    // 会话服务
     private final MinecraftSessionService sessionService;
+
+    // 皮肤管理器
     private SkinManager skinManager;
-    private final Queue < FutureTask<? >> scheduledTasks = Queues. < FutureTask<? >> newArrayDeque();
-    private long field_175615_aJ = 0L;
+
+    // 任务队列
+    private final Queue<FutureTask<?>> scheduledTasks = Queues.newArrayDeque();
+
+    // Minecraft 主线程
     private final Thread mcThread = Thread.currentThread();
+
+    // 模型管理器
     private ModelManager modelManager;
+
+    // 方块渲染调度器
     private BlockRendererDispatcher blockRenderDispatcher;
+
+    // 游戏运行状态
     volatile boolean running = true;
+
+    // 调试信息
     public String debug = "";
-    public boolean field_175613_B = false;
-    public boolean field_175614_C = false;
-    public boolean field_175611_D = false;
     public boolean renderChunksMany = true;
     long debugUpdateTime = getSystemTime();
     int fpsCounter;
     long prevFrameTime = -1L;
     private String debugProfilerName = "root";
+
 
     public Minecraft(GameConfiguration gameConfig)
     {

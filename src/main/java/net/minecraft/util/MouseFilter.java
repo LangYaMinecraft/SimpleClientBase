@@ -1,11 +1,20 @@
 package net.minecraft.util;
 
+/**
+ * 这是一个用于平滑鼠标移动的过滤器类。
+ */
 public class MouseFilter
 {
     private float field_76336_a;
     private float field_76334_b;
     private float field_76335_c;
 
+    /**
+     * 对鼠标移动进行平滑处理。
+     * @param p_76333_1_ 鼠标移动的原始值。
+     * @param p_76333_2_ 平滑系数。
+     * @return 平滑后的鼠标移动值。
+     */
     public float smooth(float p_76333_1_, float p_76333_2_)
     {
         this.field_76336_a += p_76333_1_;
@@ -21,6 +30,9 @@ public class MouseFilter
         return p_76333_1_;
     }
 
+    /**
+     * 重置平滑过滤器的状态。
+     */
     public void reset()
     {
         this.field_76336_a = 0.0F;

@@ -56,62 +56,119 @@ import net.minecraft.world.WorldServer;
 
 public abstract class EntityLivingBase extends Entity
 {
+    // 定义了一个UUID，用于标识疾跑速度提升的属性修饰符
     private static final UUID sprintingSpeedBoostModifierUUID = UUID.fromString("662A6B8D-DA3E-4C1C-8813-96EA6097278D");
+    // 创建了一个属性修饰符实例，用于在疾跑时提升速度，设置为不保存到NBT
     private static final AttributeModifier sprintingSpeedBoostModifier = (new AttributeModifier(sprintingSpeedBoostModifierUUID, "Sprinting speed boost", 0.30000001192092896D, 2)).setSaved(false);
+    // 基础属性映射，用于管理实体的属性
     private BaseAttributeMap attributeMap;
+    // 战斗追踪器，用于追踪实体的战斗状态
     private final CombatTracker _combatTracker = new CombatTracker(this);
+    // 活动药水效果映射，存储实体当前正在生效的药水效果
     private final Map<Integer, PotionEffect> activePotionsMap = Maps.newHashMap();
+    // 上次装备数组，用于存储实体上次的装备状态
     private final ItemStack[] previousEquipment = new ItemStack[5];
+    // 标记实体是否正在摆动手臂
     public boolean isSwingInProgress;
+    // 摆动手臂的进度整数表示
     public int swingProgressInt;
+    // 箭击计时器，用于计时实体被箭击后的状态
     public int arrowHitTimer;
+    // 受伤时间，用于计时实体受伤后的状态
     public int hurtTime;
+    // 最大受伤时间，表示实体受伤状态的最大持续时间
     public int maxHurtTime;
+    // 受伤时的攻击角度
     public float attackedAtYaw;
+    // 死亡时间，用于计时实体死亡后的状态
     public int deathTime;
+    // 上次摆动手臂的进度
     public float prevSwingProgress;
+    // 当前摆动手臂的进度
     public float swingProgress;
+    // 上次肢体摇摆的幅度
     public float prevLimbSwingAmount;
+    // 当前肢体摇摆的幅度
     public float limbSwingAmount;
+    // 当前肢体摇摆的角度
     public float limbSwing;
+    // 最大受伤抵抗时间，表示实体受伤后无敌状态的最大持续时间
     public int maxHurtResistantTime = 20;
+    // 上次摄像机仰角
     public float prevCameraPitch;
+    // 当前摄像机仰角
     public float cameraPitch;
+    // 未使用的随机值2
     public float randomUnused2;
+    // 未使用的随机值1
     public float randomUnused1;
+    // 渲染时的偏转角度
     public float renderYawOffset;
+    // 上次渲染时的偏转角度
     public float prevRenderYawOffset;
+    // 头部旋转角度
     public float rotationYawHead;
+    // 上次头部旋转角度
     public float prevRotationYawHead;
+    // 跳跃移动因子，控制跳跃时的移动速度
     public float jumpMovementFactor = 0.02F;
+    // 攻击玩家，用于存储最近攻击该实体的玩家
     protected EntityPlayer attackingPlayer;
+    // 最近被击中时间，用于计时最近一次被攻击的时间
     protected int recentlyHit;
+    // 标记实体是否已经死亡
     protected boolean dead;
+    // 实体的年龄，表示实体存在的时间长度
     protected int entityAge;
+    // 上次在地面上的速度因子
     protected float prevOnGroundSpeedFactor;
+    // 当前在地面上的速度因子
     protected float onGroundSpeedFactor;
+    // 移动距离，用于记录实体的移动情况
     protected float movedDistance;
+    // 上次移动距离
     protected float prevMovedDistance;
+    // 未使用的浮点数180
     protected float unused180;
+    // 实体得分值，用于记录实体被击败后的得分
     protected int scoreValue;
+    // 最近受到的伤害值
     protected float lastDamage;
+    // 标记实体是否正在跳跃
     protected boolean isJumping;
+    // 距离移动值，用于控制实体在水平方向上的移动
     public float moveStrafing;
+    // 前后移动值，用于控制实体在垂直方向上的移动
     public float moveForward;
+    // 随机摇摆角度速度，用于控制实体头部随机摇摆的速度
     protected float randomYawVelocity;
+    // 新位置和旋转更新计数器，用于记录需要更新的位置和旋转的次数
     protected int newPosRotationIncrements;
+    // 新的目标X位置
     protected double newPosX;
+    // 新的目标Y位置
     protected double newPosY;
+    // 新的目标Z位置
     protected double newPosZ;
+    // 新的目标旋转角度Y
     protected double newRotationYaw;
+    // 新的目标旋转角度X
     protected double newRotationPitch;
+    // 标记药水效果是否需要更新
     private boolean potionsNeedUpdate = true;
+    // 待攻击的实体，用于存储该实体当前的目标
     private EntityLivingBase entityLivingToAttack;
+    // 报复计时器，用于计时实体进行报复的时间
     private int revengeTimer;
+    // 最近攻击者的实体，用于存储最近攻击该实体的其他实体
     private EntityLivingBase lastAttacker;
+    // 最近攻击者的时间，用于计时最近一次被其他实体攻击的时间
     private int lastAttackerTime;
+    // 着地移动因子，控制实体着地时的移动速度
     private float landMovementFactor;
+    // 跳跃计数器，用于计时跳跃的次数
     private int jumpTicks;
+    // 吸收伤害量，表示实体当前吸收的伤害量
     private float absorptionAmount;
 
     public void onKillCommand()

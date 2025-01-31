@@ -57,29 +57,53 @@ import net.minecraft.world.World;
 
 public class EntityPlayerSP extends AbstractClientPlayer
 {
+    // 客户端网络处理器，用于处理与服务器的网络通信
     public final NetHandlerPlayClient sendQueue;
+    // 状态文件写入器，用于记录和写入游戏状态信息
     private final StatFileWriter statWriter;
+    // 上一次报告的玩家X坐标
     private double lastReportedPosX;
+    // 上一次报告的玩家Y坐标
     private double lastReportedPosY;
+    // 上一次报告的玩家Z坐标
     private double lastReportedPosZ;
+    // 上一次报告的玩家Y轴旋转角度
     private float lastReportedYaw;
+    // 上一次报告的玩家X轴旋转角度
     private float lastReportedPitch;
+    // 服务器端玩家是否正在潜行的状态
     private boolean serverSneakState;
+    // 服务器端玩家是否正在疾跑的状态
     private boolean serverSprintState;
+    // 玩家位置更新的计时器
     private int positionUpdateTicks;
+    // 玩家是否具有有效生命值的标志
     private boolean hasValidHealth;
+    // 客户端的品牌标识
     private String clientBrand;
+    // 玩家的移动输入对象
     public MovementInput movementInput;
+    // Minecraft主实例，包含游戏的大部分核心功能
     protected Minecraft mc;
+    // 计时器，用于控制疾跑状态的切换
     protected int sprintToggleTimer;
+    // 计时器，剩余的疾跑计时
     public int sprintingTicksLeft;
+    // 渲染时手臂的Y轴旋转角度
     public float renderArmYaw;
+    // 渲染时手臂的X轴旋转角度
     public float renderArmPitch;
+    // 上一帧渲染时手臂的Y轴旋转角度
     public float prevRenderArmYaw;
+    // 上一帧渲染时手臂的X轴旋转角度
     public float prevRenderArmPitch;
+    // 骑乘马时跳跃的计时器
     private int horseJumpPowerCounter;
+    // 骑乘马时跳跃的力度
     private float horseJumpPower;
+    // 玩家进入传送门的时间
     public float timeInPortal;
+    // 上一次玩家进入传送门的时间
     public float prevTimeInPortal;
 
     public EntityPlayerSP(Minecraft mcIn, World worldIn, NetHandlerPlayClient netHandler, StatFileWriter statFile)

@@ -92,31 +92,54 @@ public class Block
             return "mob.slime.small";
         }
     };
+    // 定义方块是否为完整方块
     protected boolean fullBlock;
+    // 定义方块的光线不透明度
     protected int lightOpacity;
+    // 定义方块是否为半透明
     protected boolean translucent;
+    // 定义方块发出的光线强度
     protected int lightValue;
+    // 定义方块是否使用邻居方块的亮度
     protected boolean useNeighborBrightness;
+    // 定义方块的硬度
     protected float blockHardness;
+    // 定义方块的抗爆强度
     protected float blockResistance;
+    // 定义方块是否启用统计信息
     protected boolean enableStats;
+    // 定义方块是否需要随机刻
     protected boolean needsRandomTick;
+    // 定义方块是否为容器
     protected boolean isBlockContainer;
+    // 定义方块的最小X坐标
     protected double minX;
+    // 定义方块的最小Y坐标
     protected double minY;
+    // 定义方块的最小Z坐标
     protected double minZ;
+    // 定义方块的最大X坐标
     protected double maxX;
+    // 定义方块的最大Y坐标
     protected double maxY;
+    // 定义方块的最大Z坐标
     protected double maxZ;
+    // 定义方块的步声音效类型
     public Block.SoundType stepSound;
+    // 定义方块粒子的重力
     public float blockParticleGravity;
+    // 定义方块的材质
     protected final Material blockMaterial;
+    // 定义方块的颜色
     protected final MapColor blockMapColor;
+    // 定义方块的滑动性
     public float slipperiness;
+    // 定义方块的状态
     protected final BlockState blockState;
+    // 定义方块的默认状态
     private IBlockState defaultBlockState;
+    // 定义方块的未本地化名称
     private String unlocalizedName;
-
     public static int getIdFromBlock(Block blockIn)
     {
         return blockRegistry.getIDForObject(blockIn);

@@ -33,19 +33,18 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-public final class ItemStack
-{
+public final class ItemStack {
     public static final DecimalFormat DECIMALFORMAT = new DecimalFormat("#.###");
-    public int stackSize;
-    public int animationsToGo;
-    private Item item;
-    private NBTTagCompound stackTagCompound;
-    private int itemDamage;
-    private EntityItemFrame itemFrame;
-    private Block canDestroyCacheBlock;
-    private boolean canDestroyCacheResult;
-    private Block canPlaceOnCacheBlock;
-    private boolean canPlaceOnCacheResult;
+    public int stackSize; // 表示堆栈中物品的数量
+    public int animationsToGo; // 表示物品帧动画剩余的帧数
+    private Item item; // 表示物品对象
+    private NBTTagCompound stackTagCompound; // 表示物品堆栈的NBT数据标签
+    private int itemDamage; // 表示物品的损坏值
+    private EntityItemFrame itemFrame; // 表示物品框架实体
+    private Block canDestroyCacheBlock; // 缓存可以破坏的方块对象
+    private boolean canDestroyCacheResult; // 缓存是否可以破坏方块的结果
+    private Block canPlaceOnCacheBlock; // 缓存可以放置物品的方块对象
+    private boolean canPlaceOnCacheResult; // 缓存是否可以放置物品在方块上的结果
 
     public ItemStack(Block blockIn)
     {

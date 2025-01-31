@@ -97,78 +97,148 @@ import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.util.glu.Project;
 
-public class EntityRenderer implements IResourceManagerReloadListener
-{
+public class EntityRenderer implements IResourceManagerReloadListener {
+    // 定义日志记录器
     private static final Logger logger = LogManager.getLogger();
+    // 定义雨的纹理资源位置
     private static final ResourceLocation locationRainPng = new ResourceLocation("textures/environment/rain.png");
+    // 定义雪的纹理资源位置
     private static final ResourceLocation locationSnowPng = new ResourceLocation("textures/environment/snow.png");
+    // 是否启用立体视觉效果
     public static boolean anaglyphEnable;
+    // 立体视觉效果的字段
     public static int anaglyphField;
+    // Minecraft实例
     private Minecraft mc;
+    // 资源管理器实例
     private final IResourceManager resourceManager;
+    // 随机数生成器
     private Random random = new Random();
+    // 远景裁剪平面距离
     private float farPlaneDistance;
+    // 物品渲染器
     public ItemRenderer itemRenderer;
+    // 地图物品渲染器
     private final MapItemRenderer theMapItemRenderer;
+    // 渲染器更新计数
     private int rendererUpdateCount;
+    // 指向的实体
     private Entity pointedEntity;
+    // 鼠标X轴滤波器
     private MouseFilter mouseFilterXAxis = new MouseFilter();
+    // 鼠标Y轴滤波器
     private MouseFilter mouseFilterYAxis = new MouseFilter();
+    // 第三人称视角距离
     private float thirdPersonDistance = 4.0F;
+    // 第三人称视角临时距离
     private float thirdPersonDistanceTemp = 4.0F;
+    // 平滑相机yaw角
     private float smoothCamYaw;
+    // 平滑相机pitch角
     private float smoothCamPitch;
+    // 平滑相机滤波X轴
     private float smoothCamFilterX;
+    // 平滑相机滤波Y轴
     private float smoothCamFilterY;
+    // 平滑相机部分ticks
     private float smoothCamPartialTicks;
+    // 手部fov修饰器
     private float fovModifierHand;
+    // 上一帧的手部fov修饰器
     private float fovModifierHandPrev;
+    // BOSS颜色修饰器
     private float bossColorModifier;
+    // 上一帧的BOSS颜色修饰器
     private float bossColorModifierPrev;
+    // 是否启用云雾效果
     private boolean cloudFog;
+    // 是否渲染手部
     private boolean renderHand = true;
+    // 是否绘制方块轮廓
     private boolean drawBlockOutline = true;
+    // 上一帧时间
     private long prevFrameTime = Minecraft.getSystemTime();
+    // 渲染结束时间（纳秒）
     private long renderEndNanoTime;
+    // 动态光照纹理
     private final DynamicTexture lightmapTexture;
+    // 光照颜色数组
     private final int[] lightmapColors;
+    // 光照纹理资源位置
     private final ResourceLocation locationLightMap;
+    // 是否需要更新光照
     private boolean lightmapUpdateNeeded;
+    // 手电筒闪烁效果X轴
     private float torchFlickerX;
+    // 手电筒闪烁效果变化量
     private float torchFlickerDX;
+    // 雨声计数器
     private int rainSoundCounter;
+    // 雨的X坐标数组
     private float[] rainXCoords = new float[1024];
+    // 雨的Y坐标数组
     private float[] rainYCoords = new float[1024];
+    // 雾颜色缓冲区
     private FloatBuffer fogColorBuffer = GLAllocation.createDirectFloatBuffer(16);
+    // 雾颜色红色分量
     public float fogColorRed;
+    // 雾颜色绿色分量
     public float fogColorGreen;
+    // 雾颜色蓝色分量
     public float fogColorBlue;
+    // 雾颜色2
     private float fogColor2;
+    // 雾颜色1
     private float fogColor1;
+    // 调试视角方向
     private int debugViewDirection = 0;
+    // 是否启用调试视角
     private boolean debugView = false;
+    // 相机缩放
     private double cameraZoom = 1.0D;
+    // 相机yaw角
     private double cameraYaw;
+    // 相机pitch角
     private double cameraPitch;
+    // 着色器组
     private ShaderGroup theShaderGroup;
+    // 着色器资源位置数组
     private static final ResourceLocation[] shaderResourceLocations = new ResourceLocation[] {new ResourceLocation("shaders/post/notch.json"), new ResourceLocation("shaders/post/fxaa.json"), new ResourceLocation("shaders/post/art.json"), new ResourceLocation("shaders/post/bumpy.json"), new ResourceLocation("shaders/post/blobs2.json"), new ResourceLocation("shaders/post/pencil.json"), new ResourceLocation("shaders/post/color_convolve.json"), new ResourceLocation("shaders/post/deconverge.json"), new ResourceLocation("shaders/post/flip.json"), new ResourceLocation("shaders/post/invert.json"), new ResourceLocation("shaders/post/ntsc.json"), new ResourceLocation("shaders/post/outline.json"), new ResourceLocation("shaders/post/phosphor.json"), new ResourceLocation("shaders/post/scan_pincushion.json"), new ResourceLocation("shaders/post/sobel.json"), new ResourceLocation("shaders/post/bits.json"), new ResourceLocation("shaders/post/desaturate.json"), new ResourceLocation("shaders/post/green.json"), new ResourceLocation("shaders/post/blur.json"), new ResourceLocation("shaders/post/wobble.json"), new ResourceLocation("shaders/post/blobs.json"), new ResourceLocation("shaders/post/antialias.json"), new ResourceLocation("shaders/post/creeper.json"), new ResourceLocation("shaders/post/spider.json")};
+    // 着色器数量
     public static final int shaderCount = shaderResourceLocations.length;
+    // 当前使用的着色器索引
     private int shaderIndex;
+    // 是否使用着色器
     private boolean useShader;
+    // 帧计数
     public int frameCount;
+    // 是否已初始化
     private boolean initialized = false;
+    // 更新的世界实例
     private World updatedWorld = null;
+    // 是否显示调试信息
     private boolean showDebugInfo = false;
+    // 是否使用标准雾效果
     public boolean fogStandard = false;
+    // 近裁剪距离
     private float clipDistance = 128.0F;
+    // 上一次服务器时间
     private long lastServerTime = 0L;
+    // 上一次服务器ticks
     private int lastServerTicks = 0;
+    // 服务器等待时间
     private int serverWaitTime = 0;
+    // 当前服务器等待时间
     private int serverWaitTimeCurrent = 0;
+    // 平均服务器时间差
     private float avgServerTimeDiff = 0.0F;
+    // 平均服务器ticks差
     private float avgServerTickDiff = 0.0F;
+    // FXAA着色器数组
     private ShaderGroup[] fxaaShaders = new ShaderGroup[10];
+    // 是否加载可见区块
     private boolean loadVisibleChunks = false;
+
 
     public EntityRenderer(Minecraft mcIn, IResourceManager resourceManagerIn)
     {

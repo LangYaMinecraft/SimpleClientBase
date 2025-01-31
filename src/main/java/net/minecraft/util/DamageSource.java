@@ -9,6 +9,7 @@ import net.minecraft.world.Explosion;
 
 public class DamageSource
 {
+    // 定义各种伤害来源，包括火焰、闪电、溺水、饥饿等
     public static DamageSource inFire = (new DamageSource("inFire")).setFireDamage();
     public static DamageSource lightningBolt = new DamageSource("lightningBolt");
     public static DamageSource onFire = (new DamageSource("onFire")).setDamageBypassesArmor().setFireDamage();
@@ -24,15 +25,25 @@ public class DamageSource
     public static DamageSource wither = (new DamageSource("wither")).setDamageBypassesArmor();
     public static DamageSource anvil = new DamageSource("anvil");
     public static DamageSource fallingBlock = new DamageSource("fallingBlock");
+    // 表示伤害是否无法被阻挡
     private boolean isUnblockable;
+    // 表示伤害是否在创造模式下也被允许
     private boolean isDamageAllowedInCreativeMode;
+    // 表示伤害是否绝对，不受任何防御影响
     private boolean damageIsAbsolute;
+    // 饥饿伤害的数值
     private float hungerDamage = 0.3F;
+    // 表示伤害是否来自火焰
     private boolean fireDamage;
+    // 表示伤害是否来自投射物
     private boolean projectile;
+    // 表示伤害是否根据难度进行调整
     private boolean difficultyScaled;
+    // 表示伤害是否为魔法伤害
     private boolean magicDamage;
+    // 表示伤害是否为爆炸伤害
     private boolean explosion;
+    // 伤害类型的字符串标识
     public String damageType;
 
     public static DamageSource causeMobDamage(EntityLivingBase mob)

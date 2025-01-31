@@ -9,14 +9,20 @@ import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-public class EntityOtherPlayerMP extends AbstractClientPlayer
-{
+public class EntityOtherPlayerMP extends AbstractClientPlayer {
+    // 定义一个布尔变量，用于表示项目是否正在使用
     private boolean isItemInUse;
+    // 定义一个整数变量，用于表示其他玩家的MPPos旋转增量
     private int otherPlayerMPPosRotationIncrements;
+    // 定义一个双精度浮点数变量，用于表示其他玩家的MPX坐标
     private double otherPlayerMPX;
+    // 定义一个双精度浮点数变量，用于表示其他玩家的MPY坐标
     private double otherPlayerMPY;
+    // 定义一个双精度浮点数变量，用于表示其他玩家的MPZ坐标
     private double otherPlayerMPZ;
+    // 定义一个双精度浮点数变量，用于表示其他玩家的MPYaw角度
     private double otherPlayerMPYaw;
+    // 定义一个双精度浮点数变量，用于表示其他玩家的MPPitch角度
     private double otherPlayerMPPitch;
 
     public EntityOtherPlayerMP(World worldIn, GameProfile gameProfileIn)

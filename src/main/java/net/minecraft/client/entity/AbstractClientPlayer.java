@@ -23,13 +23,35 @@ import net.optifine.player.CapeUtils;
 import net.optifine.player.PlayerConfigurations;
 import net.optifine.reflect.Reflector;
 
-public abstract class AbstractClientPlayer extends EntityPlayer
-{
+public abstract class AbstractClientPlayer extends EntityPlayer {
+    /**
+     * 存储玩家的网络信息。
+     */
     private NetworkPlayerInfo playerInfo;
+
+    /**
+     * 斗篷的资源位置，如果玩家没有斗篷，则为 null。
+     */
     private ResourceLocation locationOfCape = null;
+
+    /**
+     * 斗篷纹理的重新加载时间（毫秒）。
+     */
     private long reloadCapeTimeMs = 0L;
+
+    /**
+     * 是否使用斗篷作为鞘翅的纹理。
+     */
     private boolean elytraOfCape = false;
+
+    /**
+     * 玩家名称（去除格式化字符）。
+     */
     private String nameClear = null;
+
+    /**
+     * 鞘翅的默认纹理资源位置。
+     */
     private static final ResourceLocation TEXTURE_ELYTRA = new ResourceLocation("textures/entity/elytra.png");
 
     public AbstractClientPlayer(World worldIn, GameProfile playerProfile)

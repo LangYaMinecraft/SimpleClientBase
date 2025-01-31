@@ -55,45 +55,85 @@ import net.minecraft.world.storage.WorldInfo;
 
 public abstract class World implements IBlockAccess
 {
+    // 表示海平面的高度
     private int seaLevel = 63;
+    // 表示调度更新是否立即执行
     protected boolean scheduledUpdatesAreImmediate;
+    // 已加载实体列表
     public final List<Entity> loadedEntityList = Lists.<Entity>newArrayList();
+    // 未加载实体列表
     protected final List<Entity> unloadedEntityList = Lists.<Entity>newArrayList();
+    // 已加载方块实体列表
     public final List<TileEntity> loadedTileEntityList = Lists.<TileEntity>newArrayList();
+    // 可更新的方块实体列表
     public final List<TileEntity> tickableTileEntities = Lists.<TileEntity>newArrayList();
+    // 新增方块实体列表
     private final List<TileEntity> addedTileEntityList = Lists.<TileEntity>newArrayList();
+    // 待移除方块实体列表
     private final List<TileEntity> tileEntitiesToBeRemoved = Lists.<TileEntity>newArrayList();
+    // 玩家实体列表
     public final List<EntityPlayer> playerEntities = Lists.<EntityPlayer>newArrayList();
+    // 天气效果实体列表
     public final List<Entity> weatherEffects = Lists.<Entity>newArrayList();
+    // 通过ID映射的实体列表
     protected final IntHashMap<Entity> entitiesById = new IntHashMap();
+    // 云的颜色
     private long cloudColour = 16777215L;
+    // 减少的天光强度
     private int skylightSubtracted;
+    // 更新的随机数生成器种子
     protected int updateLCG = (new Random()).nextInt();
+    // 用于计算距离的哈希魔法数
     protected final int DIST_HASH_MAGIC = 1013904223;
+    // 上一个降雨强度
     protected float prevRainingStrength;
+    // 当前降雨强度
     protected float rainingStrength;
+    // 上一个雷鸣强度
     protected float prevThunderingStrength;
+    // 当前雷鸣强度
     protected float thunderingStrength;
+    // 上一次闪电发生的时间
     private int lastLightningBolt;
+    // 随机数生成器
     public final Random rand = new Random();
+    // 世界提供者
     public final WorldProvider provider;
+    // 世界访问器列表
     protected List<IWorldAccess> worldAccesses = Lists.<IWorldAccess>newArrayList();
+    // 块提供者
     protected IChunkProvider chunkProvider;
+    // 存储处理器
     protected final ISaveHandler saveHandler;
+    // 世界信息
     protected WorldInfo worldInfo;
+    // 是否正在寻找出生点
     protected boolean findingSpawnPoint;
+    // 地图存储
     protected MapStorage mapStorage;
+    // 村庄集合对象
     protected VillageCollection villageCollectionObj;
+    // 性能分析器
     public final Profiler theProfiler;
+    // 日历实例
     private final Calendar theCalendar = Calendar.getInstance();
+    // 世界记分板
     protected Scoreboard worldScoreboard = new Scoreboard();
+    // 是否为远程世界
     public final boolean isRemote;
+    // 活动区块集合
     protected Set<ChunkCoordIntPair> activeChunkSet = Sets.<ChunkCoordIntPair>newHashSet();
+    // 环境生物计数器
     private int ambientTickCountdown;
+    // 是否生成敌对生物
     protected boolean spawnHostileMobs;
+    // 是否生成和平生物
     protected boolean spawnPeacefulMobs;
+    // 是否正在处理加载的方块实体
     private boolean processingLoadedTiles;
+    // 世界边界
     private final WorldBorder worldBorder;
+    // 光更新的方块列表
     int[] lightUpdateBlockList;
 
     protected World(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client)

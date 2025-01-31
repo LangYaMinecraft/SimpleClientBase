@@ -214,17 +214,17 @@ import org.apache.logging.log4j.Logger;
 
 public class NetHandlerPlayClient implements INetHandlerPlayClient
 {
-    private static final Logger logger = LogManager.getLogger();
-    private final NetworkManager netManager;
-    private final GameProfile profile;
-    private final GuiScreen guiScreenServer;
-    private Minecraft gameController;
-    private WorldClient clientWorldController;
-    private boolean doneLoadingTerrain;
-    private final Map<UUID, NetworkPlayerInfo> playerInfoMap = Maps.<UUID, NetworkPlayerInfo>newHashMap();
-    public int currentServerMaxPlayers = 20;
-    private boolean field_147308_k = false;
-    private final Random avRandomizer = new Random();
+    private static final Logger logger = LogManager.getLogger(); // 日志记录器
+    private final NetworkManager netManager; // 网络管理器
+    private final GameProfile profile; // 游戏配置文件
+    private final GuiScreen guiScreenServer; // 服务器GUI屏幕
+    private Minecraft gameController; // 游戏控制器
+    private WorldClient clientWorldController; // 客户端世界控制器
+    private boolean doneLoadingTerrain; // 地形加载完成标志
+    private final Map<UUID, NetworkPlayerInfo> playerInfoMap = Maps.<UUID, NetworkPlayerInfo>newHashMap(); // 玩家信息映射表
+    public int currentServerMaxPlayers = 20; // 当前服务器最大玩家数
+    private boolean field_147308_k = false; // 未知字段，可能用于某种标志或状态
+    private final Random avRandomizer = new Random(); // 随机数生成器
 
     public NetHandlerPlayClient(Minecraft mcIn, GuiScreen p_i46300_2_, NetworkManager p_i46300_3_, GameProfile p_i46300_4_)
     {

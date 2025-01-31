@@ -98,29 +98,76 @@ import org.apache.logging.log4j.Logger;
 
 public class EntityPlayerMP extends EntityPlayer implements ICrafting
 {
+    // 日志记录器
     private static final Logger logger = LogManager.getLogger();
+
+    // 语言设置，默认值为英文（美国）
     private String translator = "en_US";
+
+    // 处理玩家网络通信的服务器端处理器
     public NetHandlerPlayServer playerNetServerHandler;
+
+    // 服务器实例
     public final MinecraftServer mcServer;
+
+    // 物品管理器
     public final ItemInWorldManager theItemInWorldManager;
+
+    // 管理的玩家X坐标
     public double managedPosX;
+
+    // 管理的玩家Z坐标
     public double managedPosZ;
+
+    // 已加载的区块列表
     public final List<ChunkCoordIntPair> loadedChunks = Lists.<ChunkCoordIntPair>newLinkedList();
+
+    // 已销毁的物品缓存
     private final List<Integer> destroyedItemsNetCache = Lists.<Integer>newLinkedList();
+
+    // 统计数据文件
     private final StatisticsFile statsFile;
+
+    // 玩家综合生命值
     private float combinedHealth = Float.MIN_VALUE;
+
+    // 上一次记录的生命值
     private float lastHealth = -1.0E8F;
+
+    // 上一次记录的食物值
     private int lastFoodLevel = -99999999;
+
+    // 玩家是否处于饥饿状态
     private boolean wasHungry = true;
+
+    // 上一次记录的经验值
     private int lastExperience = -99999999;
+
+    // 复活无敌时间（单位：tick）
     private int respawnInvulnerabilityTicks = 60;
+
+    // 聊天可见性设置
     private EntityPlayer.EnumChatVisibility chatVisibility;
+
+    // 是否启用聊天颜色
     private boolean chatColours = true;
+
+    // 上次玩家活动时间戳
     private long playerLastActiveTime = System.currentTimeMillis();
+
+    // 玩家当前观察的实体（用于旁观模式）
     private Entity spectatingEntity = null;
+
+    // 当前窗口ID
     private int currentWindowId;
+
+    // 是否仅更改数量
     public boolean isChangingQuantityOnly;
+
+    // 玩家网络延迟（ping值）
     public int ping;
+
+    // 玩家是否征服了末地（击败末影龙）
     public boolean playerConqueredTheEnd;
 
     public EntityPlayerMP(MinecraftServer server, WorldServer worldIn, GameProfile profile, ItemInWorldManager interactionManager)

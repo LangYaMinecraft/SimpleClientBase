@@ -3,12 +3,30 @@ package net.minecraft.inventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-public class Slot
-{
+public class Slot {
+    /**
+     * 插槽的索引编号。
+     */
     private final int slotIndex;
+
+    /**
+     * 该插槽所属的库存（容器）。
+     */
     public final IInventory inventory;
+
+    /**
+     * 插槽的全局编号，在 GUI 交互中用于标识该插槽。
+     */
     public int slotNumber;
+
+    /**
+     * 插槽在 GUI 界面中的 X 坐标位置。
+     */
     public int xDisplayPosition;
+
+    /**
+     * 插槽在 GUI 界面中的 Y 坐标位置。
+     */
     public int yDisplayPosition;
 
     public Slot(IInventory inventoryIn, int index, int xPosition, int yPosition)
