@@ -7,6 +7,8 @@ import java.util.concurrent.Callable;
 
 import cn.langya.Client;
 import cn.langya.event.events.EventPlayerMoveUpdate;
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;
@@ -1790,6 +1792,9 @@ public abstract class Entity implements ICommandSender
 
     public float getCollisionBorderSize()
     {
+        if (ViaLoadingBase.getInstance().getTargetVersion().newerThanOrEqualTo(ProtocolVersion.v1_12_2)) {
+            return 0F;
+        }
         return 0.1F;
     }
 

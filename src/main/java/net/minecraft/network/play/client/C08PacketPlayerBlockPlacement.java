@@ -1,6 +1,8 @@
 package net.minecraft.network.play.client;
 
 import java.io.IOException;
+
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
@@ -48,12 +50,19 @@ public class C08PacketPlayerBlockPlacement implements Packet<INetHandlerPlayServ
 
     public void writePacketData(PacketBuffer buf) throws IOException
     {
+
         buf.writeBlockPos(this.position);
         buf.writeByte(this.placedBlockDirection);
         buf.writeItemStackToBuffer(this.stack);
-        buf.writeByte((int)(this.facingX * 16.0F));
-        buf.writeByte((int)(this.facingY * 16.0F));
-        buf.writeByte((int)(this.facingZ * 16.0F));
+        if (ViaLoadingBase.getInstance().getTargetVersion().getVersion() > 47) {
+            buf.writeByte((int)(this.facingX));
+            buf.writeByte((int)(this.facingY));
+            buf.writeByte((int)(this.facingZ));
+        } else {
+            buf.writeByte((int)(this.facingX * 16.0F));
+            buf.writeByte((int)(this.facingY * 16.0F));
+            buf.writeByte((int)(this.facingZ * 16.0F));
+        }
     }
 
     public void processPacket(INetHandlerPlayServer handler)

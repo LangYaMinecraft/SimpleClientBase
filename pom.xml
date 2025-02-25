@@ -67,6 +67,30 @@
         </dependency>
 
         <dependency>
+            <groupId>viamcp</groupId>
+            <artifactId>ViaVersion</artifactId>
+            <version>5.2.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/ViaVersion-5.2.0-downgraded.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>viamcp</groupId>
+            <artifactId>ViaRewind</artifactId>
+            <version>4.0.4</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/ViaRewind-4.0.4-downgraded.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>viamcp</groupId>
+            <artifactId>ViaBackwards</artifactId>
+            <version>5.2.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/ViaBackwards-5.2.0-downgraded.jar</systemPath>
+        </dependency>
+
+        <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.0.23.Final</version>

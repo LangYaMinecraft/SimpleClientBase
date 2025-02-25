@@ -6,6 +6,7 @@ import cn.langya.ui.ElementManager;
 import cn.langya.event.EventManager;
 import cn.langya.module.ModuleManager;
 import cn.langya.value.ValueManager;
+import de.florianmichael.viamcp.ViaMCP;
 import lombok.Getter;
 import org.lwjgl.opengl.Display;
 
@@ -42,8 +43,23 @@ public class Client {
         this.configManager = new ConfigManager();
         this.commandManager = new CommandManager();
 
+        initViaMCP();
+
         Display.setTitle(String.format("%s - %s",name,version));
         Logger.info("Client side initialization complete.");
+    }
+
+    private void initViaMCP() {
+        try {
+            ViaMCP.create();
+
+            // In case you want a version slider like in the Minecraft options, you can use this code here, please choose one of those:
+
+            ViaMCP.INSTANCE.initAsyncSlider(); // For top left aligned slider
+            ViaMCP.INSTANCE.initAsyncSlider(5, 5, 100, 20); // For custom position and size slider
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
