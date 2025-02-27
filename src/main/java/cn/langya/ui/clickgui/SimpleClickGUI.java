@@ -2,7 +2,6 @@ package cn.langya.ui.clickgui;
 
 import cn.langya.Client;
 import cn.langya.module.Module;
-import cn.langya.ui.font.FontManager;
 import cn.langya.utils.HoveringUtil;
 import cn.langya.utils.RenderUtil;
 import cn.langya.value.Value;
@@ -27,7 +26,6 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class SimpleClickGUI extends GuiScreen {
-
     private DragWindow dragWindow;
     private int scrollOffset = 0;
     private static final int MAX_SCROLL = 200;
@@ -123,7 +121,7 @@ public class SimpleClickGUI extends GuiScreen {
                     double normalizedValue = (current - min) / (max - min);
                     RenderUtil.drawString(value.getName(), x, y, -1);
                     RenderUtil.drawColorSlider(x + 100, y + 3, 80, normalizedValue, 1.0, Color.BLUE);
-                    RenderUtil.drawString(String.valueOf(current), x + 190, y, -1);
+                    RenderUtil.drawString(String.format("%.2f", current), x + 190, y, -1);
                     y += 25;
                 } else if (value instanceof ColorValue) {
                     ColorValue colorValue = (ColorValue) value;

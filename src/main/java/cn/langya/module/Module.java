@@ -2,6 +2,7 @@ package cn.langya.module;
 
 import cn.langya.Client;
 import cn.langya.Wrapper;
+import cn.langya.ui.notification.NotificationType;
 import cn.langya.utils.ChatUtil;
 import cn.langya.value.Value;
 import lombok.Getter;
@@ -42,20 +43,21 @@ public class Module implements Wrapper {
      * @param enable 模块是否启用
      */
     public void setEnable(boolean enable) {
+        boolean isNull = mc.thePlayer == null;
         // 赋值需要.this
         this.enable = enable;
         // 获取值不需要.this
         if (enable) {
             onEnable();
-            ChatUtil.info(this.name + EnumChatFormatting.GREEN + " Enabled.");
+            if (!isNull) Client.getInstance().getNotificationManager().addNotification(this.name + EnumChatFormatting.RED + " Enabled.", NotificationType.SUCCESS);
         } else {
             onDisable();
-            ChatUtil.info(this.name + EnumChatFormatting.RED + " Disable.");
+            if (!isNull) Client.getInstance().getNotificationManager().addNotification(this.name + EnumChatFormatting.RED + " Disable.", NotificationType.ERROR);
         }
 
         Client.getInstance().getEventManager().registerModule(enable,this);
 
-        if (mc.thePlayer != null) mc.theWorld.playSound(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, "random.click", 0.5F, enable ? 0.6F : 0.5F, false);
+        if (!isNull) mc.theWorld.playSound(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, "random.click", 0.5F, enable ? 0.6F : 0.5F, false);
     }
 
     /**

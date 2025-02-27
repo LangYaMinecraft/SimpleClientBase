@@ -5,6 +5,7 @@ import cn.langya.config.ConfigManager;
 import cn.langya.ui.ElementManager;
 import cn.langya.event.EventManager;
 import cn.langya.module.ModuleManager;
+import cn.langya.ui.notification.NotificationManager;
 import cn.langya.value.ValueManager;
 import de.florianmichael.viamcp.ViaMCP;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class Client {
     private ValueManager valueManager;
     private ConfigManager configManager;
     private CommandManager commandManager;
+    private NotificationManager notificationManager;
 
     /**
      * 初始化客户端，设置各个管理器并配置显示标题。
@@ -42,6 +44,7 @@ public class Client {
         this.valueManager = new ValueManager();
         this.configManager = new ConfigManager();
         this.commandManager = new CommandManager();
+        this.notificationManager = new NotificationManager();
 
         initViaMCP();
 

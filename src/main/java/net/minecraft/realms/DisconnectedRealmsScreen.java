@@ -5,8 +5,8 @@ import net.minecraft.util.IChatComponent;
 
 public class DisconnectedRealmsScreen extends RealmsScreen
 {
-    private String title;
-    private IChatComponent reason;
+    private final String title;
+    private final IChatComponent reason;
     private List<String> lines;
     private final RealmsScreen parent;
     private int textHeight;

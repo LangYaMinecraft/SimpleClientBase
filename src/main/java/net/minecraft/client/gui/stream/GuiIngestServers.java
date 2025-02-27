@@ -23,7 +23,7 @@ public class GuiIngestServers extends GuiScreen
 
     public void initGui()
     {
-        this.field_152310_f = I18n.format("options.stream.ingest.title", new Object[0]);
+        this.field_152310_f = I18n.format("options.stream.ingest.title");
         this.field_152311_g = new GuiIngestServers.ServerList(this.mc);
 
         if (!this.mc.getTwitchStream().func_152908_z())
@@ -31,8 +31,8 @@ public class GuiIngestServers extends GuiScreen
             this.mc.getTwitchStream().func_152909_x();
         }
 
-        this.buttonList.add(new GuiButton(1, this.width / 2 - 155, this.height - 24 - 6, 150, 20, I18n.format("gui.done", new Object[0])));
-        this.buttonList.add(new GuiButton(2, this.width / 2 + 5, this.height - 24 - 6, 150, 20, I18n.format("options.stream.ingest.reset", new Object[0])));
+        this.buttonList.add(new GuiButton(1, this.width / 2 - 155, this.height - 24 - 6, 150, 20, I18n.format("gui.done")));
+        this.buttonList.add(new GuiButton(2, this.width / 2 + 5, this.height - 24 - 6, 150, 20, I18n.format("options.stream.ingest.reset")));
     }
 
     public void handleMouseInput() throws IOException

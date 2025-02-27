@@ -26,7 +26,7 @@ public class RealmsScreen
     protected Minecraft minecraft;
     public int width;
     public int height;
-    private GuiScreenRealmsProxy proxy = new GuiScreenRealmsProxy(this);
+    private final GuiScreenRealmsProxy proxy = new GuiScreenRealmsProxy(this);
 
     public GuiScreenRealmsProxy getProxy()
     {
@@ -95,7 +95,7 @@ public class RealmsScreen
     {
         for (int i = 0; i < this.proxy.func_154320_j().size(); ++i)
         {
-            ((RealmsButton)this.proxy.func_154320_j().get(i)).render(p_render_1_, p_render_2_);
+            this.proxy.func_154320_j().get(i).render(p_render_1_, p_render_2_);
         }
     }
 
@@ -236,7 +236,7 @@ public class RealmsScreen
 
     public static String getLocalizedString(String p_getLocalizedString_0_)
     {
-        return I18n.format(p_getLocalizedString_0_, new Object[0]);
+        return I18n.format(p_getLocalizedString_0_);
     }
 
     public static String getLocalizedString(String p_getLocalizedString_0_, Object... p_getLocalizedString_1_)

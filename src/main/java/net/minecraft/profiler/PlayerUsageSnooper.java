@@ -15,8 +15,8 @@ import net.minecraft.util.HttpUtil;
 
 public class PlayerUsageSnooper
 {
-    private final Map<String, Object> snooperStats = Maps.<String, Object>newHashMap();
-    private final Map<String, Object> clientStats = Maps.<String, Object>newHashMap();
+    private final Map<String, Object> snooperStats = Maps.newHashMap();
+    private final Map<String, Object> clientStats = Maps.newHashMap();
     private final String uniqueID = UUID.randomUUID().toString();
     private final URL serverUrl;
     private final IPlayerUsage playerStatsCollector;
@@ -57,7 +57,7 @@ public class PlayerUsageSnooper
 
                         synchronized (PlayerUsageSnooper.this.syncLock)
                         {
-                            map = Maps.<String, Object>newHashMap(PlayerUsageSnooper.this.clientStats);
+                            map = Maps.newHashMap(PlayerUsageSnooper.this.clientStats);
 
                             if (PlayerUsageSnooper.this.selfCounter == 0)
                             {
@@ -132,7 +132,7 @@ public class PlayerUsageSnooper
 
     public Map<String, String> getCurrentStats()
     {
-        Map<String, String> map = Maps.<String, String>newLinkedHashMap();
+        Map<String, String> map = Maps.newLinkedHashMap();
 
         synchronized (this.syncLock)
         {
