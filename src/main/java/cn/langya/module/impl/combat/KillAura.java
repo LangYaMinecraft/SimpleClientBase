@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @Setter
 public class KillAura extends Module {
     private final NumberValue maxCPSValue = new NumberValue("Max CPS", 6, 20, 1, 1); // 最大CPS设定
-    private final NumberValue minCPSValue = new NumberValue("Min CPS", 6, maxCPSValue.getValue(), 1, 1); // 最小CPS设定
+    private final NumberValue minCPSValue = new NumberValue("Min CPS", 6, 19, 1, 1); // 最小CPS设定
     private final ModeValue getCPSModeValue = new ModeValue("Get CPS Mode", "Random", "Increasing", "Decreasing", "Random"); // 获取CPS模式设定
     private final NumberValue scanRangeValue = new NumberValue("Scan Range", 4, 6, 1, 0.1F); // 寻找目标范围设定
     private final NumberValue attackRangeValue = new NumberValue("Attack Range", 3, scanRangeValue.getValue(), 1, 0.1F); // 攻击范围设定

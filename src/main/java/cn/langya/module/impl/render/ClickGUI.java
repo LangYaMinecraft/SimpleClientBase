@@ -16,6 +16,9 @@ public class ClickGUI extends Module {
     public ClickGUI() {
         super(Category.Render);
         setKeyCode(Keyboard.KEY_RSHIFT);
+
+        // anti gui-main-menu display👿
+        setEnable(false);
     }
 
     @Override

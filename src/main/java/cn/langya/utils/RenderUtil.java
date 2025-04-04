@@ -104,12 +104,12 @@ public class RenderUtil implements Wrapper {
         int barWidth = (int) (width * (value / max));
 
         // 背景
-        drawRect2(x, y, width, 5, new Color(50, 50, 50).getRGB());
+        drawRect(x, y, width, 5, new Color(50, 50, 50).getRGB());
 
         // 进度条
-        drawRect2(x, y, barWidth, 5, color.getRGB());
+        drawRect(x, y, barWidth, 5, color.getRGB());
 
         // 滑块
-        drawRect2(x + barWidth - 2, y - 2, 4, 9, Color.WHITE.getRGB());
+        drawRect(x + barWidth - 2, y - 2, 4, 9, Color.WHITE.getRGB());
     }
 }
